@@ -1,0 +1,24 @@
+/* project datatable 관련 css */
+  .project-name {
+    color: black;
+  }
+  div.dataTables_wrapper .row:first-child {
+    display: flex;
+    justify-content: end;
+  }
+  div.dataTables_filter {
+    display: flex;
+  }
+  select#select {
+    margin-right: 15px;
+  }
+  div.dataTables_length {
+    margin-right: 15px;
+  }
+  .custom-list-top {
+    display: flex;
+    justify-content: space-between;
+}
+.custom-list-filter {
+    display: flex;
+}

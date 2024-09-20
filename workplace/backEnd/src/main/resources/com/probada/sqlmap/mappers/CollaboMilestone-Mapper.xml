@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CollaboMilestone-Mapper">
+	
+	<select id="selectWholeIssueByCprojNo" resultType="collaboIssueVO" parameterType="String">
+		SELECT DISTINCT
+    		ISSUE_NO,
+    		TITLE
+		FROM
+    		ISSUE
+    	WHERE
+    		CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<insert id="insertMilestoneDetail" parameterType="collaboMilestoneVO">
+		INSERT INTO
+			MILE
+			(MILE_NO, TITLE, USER_ID ,CPROJ_NO ,CONTENT ,STATUS ,REGDATE)
+   		VALUES
+   			(#{mileNo},#{title},#{userId},#{cprojNo},#{content},#{status}, sysdate)
+	</insert>
+	
+	<update id="updateMilestoneDetail" parameterType="collaboMilestoneVO">
+		UPDATE
+			MILE
+		SET
+			TITLE =#{title},
+			USER_ID = #{userId},
+			PROJ_NO = #{cprojNo},
+			CONTENT = #{content},
+			STATUS = #{status},
+			REGDATE = sysdate
+		WHERE
+			MILE_NO = #{mileNo}
+	</update>
+	
+	<insert id="insertMileIssueRelation" parameterType="collaboIssueVO">
+		INSERT INTO
+			MILE_ISSUE(MILE_NO,ISSUE_NO,JOINDATE)
+		VALUES
+			(#{mileNo},#{issueNo},sysdate)
+	</insert>
+
+	<delete id="deleteMileIssueRelation" parameterType="collaboIssueVO">
+		DELETE FROM
+			MILE_ISSUE
+		WHERE
+			MILE_NO = #{mileNo}
+		AND
+			ISSUE_NO = #{issueNo}
+	</delete>
+	
+	
+	<select id="selectMileSeqNext" resultType="int">
+		SELECT
+			MILE_SEQ.NEXTVAL AS MILE_NO FROM DUAL
+	</select>
+	
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="History-Mapper">
+	<select id="selectProjHistoryList" resultType="historyVO">
+		SELECT A.HISTORY_NO
+			 , A.MSG
+			 , A.URL
+			 , A.REGDATE
+			 , B.TITLE AS PROJ_NO
+			 , C.CODE_NAME AS DIST
+			 , A.USER_ID
+			 , A.ACT
+		  FROM HISTORY A, PROJECT B, COMMON_CODE C
+         WHERE A.PROJ_NO = B.PROJ_NO
+           AND A.DIST = C.CODE_NO
+           AND A.PROJ_NO = #{projNo}
+		 ORDER BY HISTORY_NO DESC
+	</select>
+	
+	<select id="selectProjHistoryDistSort" resultType="historyVO">
+		SELECT DISTINCT B.CODE_NAME AS DIST
+		  FROM HISTORY A, COMMON_CODE B
+		 WHERE A.DIST = B.CODE_NO
+		   AND A.PROJ_NO = #{projNo}
+		 ORDER BY B.CODE_NAME ASC
+	</select>
+
+	<select id="selectHistoryList" resultType="historyVO">
+		SELECT A.HISTORY_NO
+			 , A.MSG
+			 , A.URL
+			 , A.REGDATE
+			 , B.TITLE AS PROJ_NO
+			 , C.CODE_NAME AS DIST
+			 , A.USER_ID
+			 , A.ACT
+		  FROM HISTORY A, PROJECT B, COMMON_CODE C
+         WHERE A.PROJ_NO = B.PROJ_NO
+           AND A.DIST = C.CODE_NO
+           AND USER_ID = #{userId}
+		 ORDER BY HISTORY_NO DESC
+	</select>
+	
+	<select id="selectMyHistoryProjectSort" resultType="historyVO">
+		SELECT DISTINCT B.TITLE AS PROJ_NO
+		  FROM HISTORY A, PROJECT B
+		 WHERE A.PROJ_NO = B.PROJ_NO
+		   AND A.USER_ID = #{userId}
+		 ORDER BY B.TITLE ASC
+	</select>
+	
+	<select id="selectMyHistoryDistSort" resultType="historyVO">
+		SELECT DISTINCT B.CODE_NAME AS DIST
+		  FROM HISTORY A, COMMON_CODE B
+		 WHERE A.DIST = B.CODE_NO
+		   AND A.USER_ID = #{userId}
+		 ORDER BY B.CODE_NAME ASC
+	</select>
+</mapper>
+
+
+

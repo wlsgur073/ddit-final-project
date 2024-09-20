@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CollaboTask-Mapper">
+	
+	<select id="selectTaskListByCprojNo" resultType="collaboTaskVO" parameterType="String">
+		SELECT
+        	A.TASK_NO AS TASK_NO,
+            A.TITLE AS TITLE,
+            B.NICKNAME AS USER_ID,
+            A.CONTENT AS CONTENT,
+            A.IMPORTANT AS IMPORTANT,
+            A.REGDATE AS REGDATE,
+            A.UPDATEDATE AS UPDATEDATE,
+            A.STARTDATE AS STARTDATE,
+            A.ENDDATE AS ENDDATE,
+            A.STATUS AS STATUS,
+            A.DOC_CONT_NO AS DOC_CONT_NO
+		FROM
+        	TASK A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<select id="selectTaskDetailByTaskNo" resultType="collaboTaskVO" parameterType="collaboTaskVO">
+		SELECT
+        	A.TASK_NO AS TASK_NO,
+            A.TITLE AS TITLE,
+            B.NICKNAME AS USER_ID,
+            A.CONTENT AS CONTENT,
+            A.IMPORTANT AS IMPORTANT,
+            A.REGDATE AS REGDATE,
+            A.UPDATEDATE AS UPDATEDATE,
+            A.STARTDATE AS STARTDATE,
+            A.ENDDATE AS ENDDATE,
+            A.STATUS AS STATUS,
+            A.DOC_CONT_NO AS DOC_CONT_NO
+		FROM
+        	TASK A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.CPROJ_NO = #{cprojNo}
+		AND
+			A.TASK_NO = #{taskNo}
+	</select>
+	
+	
+	<update id="updateTaskStatus" parameterType="collaboTaskVO">
+		UPDATE
+			TASK
+		SET
+			STATUS = #{status},
+			UPDATEDATE = sysdate
+		WHERE
+			TASK_NO = #{taskNo}
+	</update>
+	
+	<delete id="deleteTaskByTaskNo" parameterType="collaboTaskVO">
+		DELETE FROM
+			TASK
+		WHERE
+			TASK_NO = #{taskNo}
+	</delete>
+	
+	
+	<insert id="insertTask" parameterType="collaboTaskVO">
+		INSERT INTO TASK (
+					     TASK_NO
+					    ,CPROJ_NO
+					    ,TITLE
+					    ,USER_ID
+					    ,CONTENT
+					    ,IMPORTANT
+					    ,REGDATE
+					    ,UPDATEDATE
+					    ,STATUS
+					    ,DOC_CONT_NO
+					    ,STARTDATE
+					    ,ENDDATE,
+					     SESSION_ID
+		) VALUES (
+					    #{taskNo}
+					    ,#{cprojNo}
+					    ,#{title}
+					    ,#{userId}
+					    ,#{content}
+					    ,#{important}
+					    ,sysdate
+					    ,sysdate
+					    ,#{status}
+					    ,1
+					    ,#{startdate}
+					    ,#{enddate},
+					    #{sessionId}
+		)
+	</insert>
+	
+	<update id="updateTaskDetailByTaskNo" parameterType="collaboTaskVO">
+		UPDATE
+			TASK
+		SET
+			CPROJ_NO = #{cprojNo}
+			,TITLE = #{title}
+			,USER_ID = #{userId}
+			,CONTENT = #{content}
+			,IMPORTANT = #{important}
+			,UPDATEDATE = sysdate
+			,STATUS = #{status}
+			,STARTDATE = #{startdate}
+			,ENDDATE = #{enddate}
+			,SESSION_ID = #{sessionId}
+		WHERE
+			TASK_NO = #{taskNo}
+	</update>
+	
+	<select id="selectTaskSeqNext" resultType="int">
+		SELECT
+			TASK_SEQ.NEXTVAL AS TASK_NO FROM DUAL
+	</select>
+	
+	<select id="selectTaskCountInCprojByUserId" resultType="int" parameterType="User">
+		SELECT
+			COUNT(*)
+		FROM
+			TASK A
+		JOIN
+			C_PROJECT_R B ON(A.USER_ID = B.USER_ID AND A.CPROJ_NO = B.CPROJ_NO)
+		WHERE
+			A.USER_ID = #{userId}
+		  AND
+            A.CPROJ_NO = #{cprojNo}    
+	</select>
+	
+</mapper>

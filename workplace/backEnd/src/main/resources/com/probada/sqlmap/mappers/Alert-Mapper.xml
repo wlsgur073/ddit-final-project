@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Alert-Mapper">
+
+	<insert id="insertAlert" parameterType="Map">
+		INSERT INTO ALERT (
+		USER_ID
+		,NICKNAME
+		,WRITE_TIME
+		,CONTENT
+		,MAIL_FROM)
+		VALUES (
+		#{receiverUserId}
+		, #{serderNickName}
+		, SYSDATE
+		, #{content}
+		, #{mailFrom}
+		)
+	</insert>
+
+	<select id="getUserAlertList" parameterType="String"
+		resultType="Alert">
+		SELECT
+		USER_ID
+		,NICKNAME
+		,WRITE_TIME
+		,CONTENT
+		,MAIL_FROM
+		FROM ALERT
+		WHERE USER_ID = #{nickname}
+	</select>
+
+	<select id="getAlertCount" parameterType="String"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM ALERT
+		WHERE USER_ID = #{NICKNAME}
+	</select>
+
+</mapper>

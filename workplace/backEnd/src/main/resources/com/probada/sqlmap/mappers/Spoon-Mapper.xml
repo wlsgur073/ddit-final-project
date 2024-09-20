@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Spoon-Mapper">
+	
+	<select id="selectTaskDetailByTaskNo" resultType="task" parameterType="task">
+	  SELECT
+        	A.TASK_NO AS TASK_NO,
+            A.TITLE AS TITLE,
+            B.USER_ID AS USER_ID,
+            A.CONTENT AS CONTENT,
+            A.IMPORTANT AS IMPORTANT,
+            A.REGDATE AS REGDATE,
+            A.UPDATEDATE AS UPDATEDATE,
+            A.STARTDATE AS STARTDATE,
+            A.ENDDATE AS ENDDATE,
+            A.STATUS AS STATUS,
+            A.DOC_CONT_NO AS DOC_CONT_NO
+		FROM
+        	TASK A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.PROJ_NO = #{projNo}
+		AND
+			A.TASK_NO = #{taskNo}
+	</select>
+	
+	<select id="selectTaskListByProjectNo" resultType="task" parameterType="String">
+		SELECT
+			A.PROJ_NO AS PROJ_NO,
+        	A.TASK_NO AS TASK_NO,
+            A.TITLE AS TITLE,
+            B.NICKNAME AS USER_ID,
+            A.CONTENT AS CONTENT,
+            A.IMPORTANT AS IMPORTANT,
+            A.REGDATE AS REGDATE,
+            A.UPDATEDATE AS UPDATEDATE,
+            A.STARTDATE AS STARTDATE,
+            A.ENDDATE AS ENDDATE,
+            A.STATUS AS STATUS,
+            A.DOC_CONT_NO AS DOC_CONT_NO
+		FROM
+        	TASK A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.PROJ_NO = #{projNo}
+	</select>
+	
+	<insert id="insertTaskToCollabo" parameterType="task">
+		INSERT INTO TASK (
+					     TASK_NO
+					    ,CPROJ_NO
+					    ,TITLE
+					    ,USER_ID
+					    ,CONTENT
+					    ,IMPORTANT
+					    ,REGDATE
+					    ,UPDATEDATE
+					    ,STATUS
+					    ,DOC_CONT_NO
+					    ,STARTDATE
+					    ,ENDDATE,
+					     SESSION_ID
+		) VALUES (
+					    #{taskNo}
+					    ,#{cprojNo}
+					    ,#{title}
+					    ,#{userId}
+					    ,#{content}
+					    ,#{important}
+					    ,sysdate
+					    ,sysdate
+					    ,#{status}
+					    ,1
+					    ,TO_DATE(SUBSTR(#{startdate},1,10),'YYYY-MM-DD')
+					    ,TO_DATE(SUBSTR(#{enddate},1,10),'YYYY-MM-DD')
+					    ,#{sessionId}
+		)
+	</insert>
+	
+	
+	
+	<select id="selectTaskSeqNext" resultType="int">
+		SELECT
+			TASK_SEQ.NEXTVAL AS TASK_NO FROM DUAL
+	</select>
+	
+</mapper>

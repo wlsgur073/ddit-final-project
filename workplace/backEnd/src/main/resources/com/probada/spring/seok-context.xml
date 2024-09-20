@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	
+
+
+<!-- 
+	<bean id="documentDAO" class="com.probada.user.dao.DocumentDAOImpl"
+		p:session-ref="sqlSession"
+
+	/>
+	
+	
+	<bean id="documentService" class="com.probada.user.service.DocumentServiceImpl"
+		  p:documentDAO-ref="documentDAO"
+	/> -->
+	
+
+
+	
+	<bean id="documentDAO" class="com.probada.document.dao.DocumentDAOImpl"
+		
+		p:sqlSession-ref="sqlSession"
+	
+	/>
+
+	<bean id="chatDAO" class="com.probada.chat.dao.ChatDAOImpl"
+		
+		p:sqlSession-ref="sqlSession"
+	
+	/>
+
+	<bean id="searchDAO" class="com.probada.totalSearch.dao.SearchDAOImpl"
+		p:sqlSession-ref="sqlSession"
+	
+	/>
+
+
+
+
+
+	<bean id="documentService" class="com.probada.document.service.DocumentServiceImpl"
+		  p:documentDAO-ref="documentDAO"
+	/>
+	
+	
+	<!-- Service -->
+	<bean id="chatService" class="com.probada.chat.service.ChatServiceImpl"
+		  p:chatDAO-ref="chatDAO"
+	/>
+
+
+	
+	<bean id="searchService" class="com.probada.totalSearch.service.SearchServiceImpl"
+		p:searchDAO-ref="searchDAO"
+	/>
+	
+	
+
+	
+
+</beans>

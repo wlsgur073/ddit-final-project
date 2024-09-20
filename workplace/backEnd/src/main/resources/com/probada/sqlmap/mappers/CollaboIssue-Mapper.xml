@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CollaboIssue-Mapper">
+	
+	<select id="selectIssueListByCprojNoAndUserId" resultType="collaboIssueVO" parameterType="collaboIssueVO">
+		SELECT A.ISSUE_NO
+			 , A.CPROJ_NO
+			 , B.NICKNAME AS USER_ID
+			 , A.TITLE
+			 , A.CONTENT
+			 , <include refid="importantForIssue"/>
+			 , A.REGDATE
+			 , A.STARTDATE
+			 , A.ENDDATE
+			 , A.UPDATEDATE
+			 , <include refid="statusForIssue"/>
+			 , A.DOC_CONT_NO
+			 , C.TITLE AS CPROJ_TITLE
+		  FROM ISSUE A, "USER" B, C_PROJECT C
+		 WHERE A.USER_ID = B.USER_ID
+		   AND A.CPROJ_NO = C.CPROJ_NO
+		   AND A.USER_ID = #{userId}
+		   AND A.PCROJ_NO = #{cprojNo}
+	</select>
+	
+	<select id="selectIssueListByCprojNo" resultType="collaboIssueVO" parameterType="String">
+		SELECT
+			A.ISSUE_NO,
+			A.CPROJ_NO,
+			B.NICKNAME AS USER_ID,
+			A.TITLE,
+			A.CONTENT,
+			<include refid="importantForIssue"/>,
+			A.REGDATE,
+			A.STARTDATE,
+			A.ENDDATE,
+			A.UPDATEDATE,
+			<include refid="statusForIssue"/> ,
+			A.DOC_CONT_NO
+		FROM
+			ISSUE A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.CPROJ_NO = #{cprojNo}
+		ORDER BY
+			A.ISSUE_NO DESC
+	</select>
+	
+	<select id="selectMileIssueListByIssueNo" resultType="mileIssue" parameterType="String">
+		SELECT
+			MILE_NO,
+			ISSUE_NO,
+			JOINDATE
+		FROM
+			MILE_ISSUE
+		WHERE
+			ISSUE_NO = #{issueNo}
+	</select>
+	
+	<select id="selectIssueByIssueNo" resultType="collaboIssueVO" parameterType="collaboIssueVO">
+		SELECT
+    		A.ISSUE_NO,A.CPROJ_NO ,B.NICKNAME ,B.USER_ID, A.TITLE ,A.CONTENT ,<include refid="importantForIssue"/>
+   			,A.REGDATE ,A.STARTDATE ,A.ENDDATE ,A.UPDATEDATE ,<include refid="statusForIssue"/> ,A.DOC_CONT_NO
+		FROM
+    		ISSUE A
+    	JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+    	WHERE
+    		A.ISSUE_NO = #{issueNo}
+    	AND
+    		A.CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<update id="updateIssueByIssueNo" parameterType="collaboIssueVO">
+		UPDATE ISSUE
+		SET CPROJ_NO    = #{cprojNo},
+    		USER_ID    = #{userId},
+       		TITLE      = #{title},
+       		CONTENT    = #{content},
+       		IMPORTANT  = #{important},
+       		STARTDATE  = #{startdate},
+       		ENDDATE    = #{enddate},
+       		UPDATEDATE = sysdate,
+       		STATUS     = #{status}
+       	WHERE
+       		ISSUE_NO   = #{issueNo}
+	</update>
+	
+	
+	<sql id="statusForIssue">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.STATUS) AS STATUS
+	</sql>
+
+	<sql id="importantForIssue">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.IMPORTANT) AS IMPORTANT
+	</sql>
+
+	<select id="selectIssueSeqNext" resultType="int">
+		SELECT
+			ISSUE_SEQ.NEXTVAL AS ISSUE_NO FROM DUAL
+	</select>
+	
+	
+</mapper>

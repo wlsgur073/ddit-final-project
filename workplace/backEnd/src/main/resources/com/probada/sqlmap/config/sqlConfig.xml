@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+    <typeAliases>
+    	<typeAlias type="java.lang.String" alias="str"/>
+		<typeAlias type="java.lang.Integer" alias="int"/>
+
+		<typeAlias type="com.probada.user.vo.UserVO" alias="User"/>
+		<typeAlias type="com.probada.myWork.vo.HistoryVO" alias="historyVO"/>
+		<typeAlias type="com.probada.request.vo.RequestVO" alias="requestVO"/>
+		<typeAlias type="com.probada.mail.vo.MailVO" alias="mailVO"/>
+		<typeAlias type="com.probada.mail.vo.AttachVO" alias="attachVO"/>
+    	<typeAlias type="com.probada.project.vo.ProjectTagVO" alias="projectTag"/>
+    	<typeAlias type="com.probada.task.vo.TaskVO" alias="task"/>
+    	<typeAlias type="com.probada.issue.vo.IssueVO" alias="issue"/>
+    	<typeAlias type="com.probada.milestone.vo.MilestoneVO" alias="milestone"/>
+    	<typeAlias type="com.probada.issue.vo.MileIssueVO" alias="mileIssue"/>
+    	<typeAlias type="com.probada.collabo.vo.CollaboVO" alias="collaboVO"/>
+    	<typeAlias type="com.probada.collabo.vo.CollaboTaskVO" alias="collaboTaskVO"/>
+    	<typeAlias type="com.probada.collabo.vo.CollaboMilestoneVO" alias="collaboMilestoneVO"/>
+    	<typeAlias type="com.probada.collabo.vo.CollaboIssueVO" alias="collaboIssueVO"/>
+    	<typeAlias type="com.probada.collabo.vo.CollaboTagVO" alias="collaboTagVO"/>
+    	<typeAlias type="com.probada.spoon.vo.SpoonVO" alias="spoonVO"/>
+    	<typeAlias type="com.probada.alert.vo.AlertVO" alias="Alert"/>
+    	<typeAlias type="com.probada.issue.vo.IssueReplyVO" alias="issueReply"/>
+    	<typeAlias type="com.probada.myWork.command.myTaskChartCommand" alias="myTaskChart"/>
+		<!-- <typeAlias alias="projectTagVO" type="com.probada.project.vo.ProjectTagVO"/>
+		 <typeAlias alias="searchVO" type="egovframework.example.sample.service.SampleDefaultVO"/>
+		<typeAlias alias="sampleVO" type="egovframework.example.sample.service.SampleVO"/> -->
+    </typeAliases>
+</configuration>

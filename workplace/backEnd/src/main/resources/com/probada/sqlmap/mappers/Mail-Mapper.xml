@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Mail-Mapper">
+	<select id="selectNicknameByUserId" parameterType="String" resultType="String">
+		SELECT NICKNAME
+		  FROM "USER"
+		 WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="selectUserIdByNickname" parameterType="String" resultType="String">
+		SELECT USER_ID
+		  FROM "USER"
+		 WHERE NICKNAME = #{nickname}
+	</select>
+
+	<select id="selectReceiveMailList" resultType="mailVO">
+		SELECT MAIL_NO
+			 , TITLE
+			 , USER_TO
+			 , USER_FROM
+			 , CONTENT
+			 , REGDATE
+			 , STATUS
+			 , DIST
+			 , RECV_DEL
+			 , SENT_DEL
+		  FROM MAIL
+		 WHERE USER_TO = #{userTo}
+		   AND DIST = 'B901'
+		   AND RECV_DEL = '1'
+		 ORDER BY REGDATE DESC
+	</select>
+	
+	<select id="selectSendMailList" resultType="mailVO">
+		SELECT MAIL_NO
+			 , TITLE
+			 , USER_TO
+			 , USER_FROM
+			 , CONTENT
+			 , REGDATE
+			 , STATUS
+			 , DIST
+			 , RECV_DEL
+			 , SENT_DEL
+		  FROM MAIL
+		 WHERE USER_FROM = #{userFrom}
+		   AND DIST = 'B901'
+		   AND SENT_DEL = '1'
+		   AND NOT USER_FROM = USER_TO
+		 ORDER BY REGDATE DESC
+	</select>
+	
+	<select id="selectTempMailList" resultType="mailVO">
+		SELECT MAIL_NO
+			 , TITLE
+			 , USER_TO
+			 , USER_FROM
+			 , CONTENT
+			 , REGDATE
+			 , STATUS
+			 , DIST
+			 , RECV_DEL
+			 , SENT_DEL
+		  FROM MAIL
+		 WHERE USER_FROM = #{userFrom}
+		   AND DIST = 'B902'
+		   AND SENT_DEL = '1'
+		 ORDER BY REGDATE DESC
+	</select>
+	
+	<select id="selectTrashMailList" resultType="mailVO">
+		SELECT MAIL_NO
+			 , TITLE
+			 , USER_TO
+			 , USER_FROM
+			 , CONTENT
+			 , REGDATE
+			 , STATUS
+			 , DIST
+			 , RECV_DEL
+			 , SENT_DEL
+		  FROM MAIL
+		 WHERE (USER_TO = #{userTo} AND RECV_DEL = '2')
+			OR (USER_FROM = #{userFrom} AND SENT_DEL = '2')
+		 ORDER BY REGDATE DESC
+	</select>
+	
+	<select id="selectMailDetail" resultType="mailVO">
+		SELECT MAIL_NO
+			 , TITLE
+			 , USER_TO
+			 , USER_FROM
+			 , CONTENT
+			 , REGDATE
+			 , STATUS
+		  FROM MAIL
+		 WHERE MAIL_NO = #{mailNo}
+	</select>
+	
+	<select id="selectMailAttachList" resultType="attachVO">
+		SELECT ATTACH_NO
+			 , MAIL_NO
+			 , FILE_PATH
+			 , FILE_NAME
+			 , FILE_TYPE
+			 , FILE_SIZE
+			 , ATTACHER
+			 , REGDATE 
+		  FROM ATTACH
+		 WHERE MAIL_NO = #{mailNo}
+		 ORDER BY FILE_NAME ASC
+	</select>
+	
+	<update id="changeMailStatus">
+		UPDATE MAIL
+		   SET STATUS = 'A802'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="registMail">
+		INSERT INTO MAIL (
+			  MAIL_NO
+			, TITLE
+			, USER_TO
+			, USER_FROM
+			, CONTENT
+			, REGDATE
+			, STATUS
+			, DIST
+			, RECV_DEL
+			, SENT_DEL
+			) VALUES (
+			  #{mailNo}
+			, #{title}
+			, #{userTo}
+			, #{userFrom}
+			, #{content}
+			, SYSDATE
+			, 'A801'
+			, 'B901'
+			, '1'
+			, '1'
+			)
+	</update>
+	
+	<update id="registTempMail">
+		INSERT INTO MAIL (
+			  MAIL_NO
+			, TITLE
+			, USER_TO
+			, USER_FROM
+			, CONTENT
+			, REGDATE
+			, STATUS
+			, DIST
+			, RECV_DEL
+			, SENT_DEL
+			) VALUES (
+			  #{mailNo}
+			, #{title}
+			, #{userTo}
+			, #{userFrom}
+			, #{content}
+			, SYSDATE
+			, 'A801'
+			, 'B902'
+			, '1'
+			, '1'
+			)
+	</update>
+	
+	<update id="registAttachFile">
+		INSERT INTO ATTACH (
+			  ATTACH_NO
+			, MAIL_NO
+			, FILE_PATH
+			, FILE_NAME
+			, FILE_TYPE
+			, FILE_SIZE
+			, ATTACHER
+			, REGDATE
+		) VALUES (
+			  ATTACH_SEQ.NEXTVAL
+			, #{mailNo}
+			, #{filePath}
+			, #{fileName}
+			, #{fileType}
+			, #{fileSize}
+			, #{attacher}
+			, SYSDATE
+		)
+	</update>
+	
+	<select id="selectMailSequenceNextValue" resultType="int">
+		SELECT MAIL_SEQ.NEXTVAL AS MAIL_NO
+		  FROM DUAL
+	</select>
+	
+	<update id="returnReceiveMail">
+		UPDATE MAIL
+		   SET RECV_DEL = '1'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+
+	<update id="returnSendMail">
+		UPDATE MAIL
+		   SET SENT_DEL = '1'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="returnMineMail">
+		UPDATE MAIL
+		   SET SENT_DEL = '1'
+		     , RECV_DEL = '1'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteReceiveMailToTrash">
+		UPDATE MAIL
+		   SET RECV_DEL = '2'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+
+	<update id="deleteSendMailToTrash">
+		UPDATE MAIL
+		   SET SENT_DEL = '2'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteMineMailToTrash">
+		UPDATE MAIL
+		   SET SENT_DEL = '2'
+		     , RECV_DEL = '2'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteTempMail">
+		UPDATE MAIL
+		   SET SENT_DEL = '3'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteTrashReceiveMail">
+		UPDATE MAIL
+		   SET RECV_DEL = '3'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteTrashSendMail">
+		UPDATE MAIL
+		   SET SENT_DEL = '3'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<update id="deleteTrashMineMail">
+		UPDATE MAIL
+		   SET SENT_DEL = '3'
+		     , RECV_DEL = '3'
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+	
+	<select id="selectAttachByAttachNo" resultType="attachVO">
+		SELECT ATTACH_NO
+			 , MAIL_NO
+			 , FILE_PATH
+			 , FILE_NAME
+			 , FILE_TYPE
+			 , ATTACHER
+			 , REGDATE
+			 , FILE_SIZE
+		  FROM ATTACH
+		 WHERE ATTACH_NO = #{attachNo}
+	</select>
+	
+	<update id="deleteAttachByAttachNo">
+		DELETE
+		  FROM ATTACH
+		 WHERE ATTACH_NO = #{attachNo}
+	</update>
+	
+	<update id="tempMailToSendMail">
+		UPDATE MAIL
+		   SET TITLE   = #{title}
+			 , CONTENT = #{content}
+			 , USER_TO = #{userTo}
+			 , REGDATE = SYSDATE
+			 , DIST    = 'B901' 
+		 WHERE MAIL_NO = #{mailNo}
+	</update>
+</mapper>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- mailAttachPath -->
+	<bean id="mailAttachPath" class="java.lang.String">
+		<constructor-arg value="${mail.attach.upload}"/>
+	</bean>
+	
+	<!-- summerNote ImagePath -->
+	<bean id="imgPath" class="java.lang.String">
+		<constructor-arg value="${summernote.img}"/>
+	</bean>
+	
+	<!-- Repository -->
+	<bean id="projectDAO"
+		  class="com.probada.project.dao.ProjectDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="projectTagDAO"
+		  class="com.probada.project.dao.ProjectTagDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="taskDAO"
+		  class="com.probada.task.dao.TaskDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="historyDAO"
+		  class="com.probada.myWork.dao.HistoryDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="requestDAO"
+		  class="com.probada.request.dao.RequestDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="mailDAO"
+		  class="com.probada.mail.dao.MailDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="issueDAO"
+		  class="com.probada.issue.dao.IssueDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="issueReplyDAO"
+		  class="com.probada.issue.dao.IssueReplyDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="milestoneDAO"
+		  class="com.probada.milestone.dao.MilestoneDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="userDAO"
+		  class="com.probada.user.dao.UserDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="paymentsBillDAO"
+		  class="com.probada.payment.dao.PaymentsBillDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+
+	<bean id="collaboDAO"
+		  class="com.probada.collabo.dao.CollaboDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="collaboTaskDAO"
+		  class="com.probada.collabo.dao.CollaboTaskDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="collaboMilestoneDAO"
+		  class="com.probada.collabo.dao.CollaboMilestoneDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="collaboIssueDAO"
+		  class="com.probada.collabo.dao.CollaboIssueDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="alertDAO"
+		  class="com.probada.alert.dao.AlertDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="myTaskDAO"
+		  class="com.probada.myWork.dao.MyTaskDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="spoonDAO"
+		  class="com.probada.spoon.dao.SpoonDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+
+	<!-- Service -->
+	<bean id="spoonService"
+		  class="com.probada.spoon.service.SpoonServiceImpl"
+		  p:spoonDAO-ref="spoonDAO"
+	/>
+	<bean id="collaboService"
+		  class="com.probada.collabo.service.CollaboServiceImpl"
+		  p:collaboDAO-ref="collaboDAO"
+	/>
+	<bean id="collaboTaskService"
+		  class="com.probada.collabo.service.CollaboTaskServiceImpl"
+		  p:collaboTaskDAO-ref="collaboTaskDAO"
+	/>
+	<bean id="collaboMilestoneService"
+		  class="com.probada.collabo.service.CollaboMilestoneServiceImpl"
+		  p:collaboMilestoneDAO-ref="collaboMilestoneDAO"
+	/>
+	<bean id="collaboIssueService"
+		  class="com.probada.collabo.service.CollaboIssueServiceImpl"
+		  p:collaboIssueDAO-ref="collaboIssueDAO"
+	/>
+	
+	<bean id="projectService"
+		  class="com.probada.project.service.ProjectServiceImpl"
+		  p:projectDAO-ref="projectDAO"
+	/>
+	<bean id="projectTagService"
+		  class="com.probada.project.service.ProjectTagServiceImpl"
+		  p:projectTagDAO-ref="projectTagDAO"
+	/>
+	<bean id="taskService"
+		  class="com.probada.task.service.TaskServiceImpl"
+		  p:taskDAO-ref="taskDAO"
+	/>
+	<bean id="historyService"
+		  class="com.probada.myWork.service.HistoryServiceImpl"
+		  p:historyDAO-ref="historyDAO"
+	/>
+	<bean id="requestService"
+		  class="com.probada.request.service.RequestServiceImpl"
+		  p:requestDAO-ref="requestDAO"
+	/>
+	<bean id="mailService"
+		  class="com.probada.mail.service.MailServiceImpl"
+		  p:mailDAO-ref="mailDAO"
+	/>
+	<bean id="issueService"
+		  class="com.probada.issue.service.IssueServiceImpl"
+		  p:issueDAO-ref="issueDAO"
+	/>
+	<bean id="issueReplyService"
+		  class="com.probada.issue.service.IssueReplyServiceImpl"
+		  p:issueReplyDAO-ref="issueReplyDAO"
+	/>
+	<bean id="milestoneService"
+		  class="com.probada.milestone.service.MilestoneServiceImpl"
+		  p:milestoneDAO-ref="milestoneDAO"
+	/>
+	<bean id="userService"
+		  class="com.probada.user.service.UserServiceImpl"
+		  p:userDAO-ref="userDAO"
+	/>
+	<bean id="paymentsBillService"
+		  class="com.probada.payment.service.PaymentsBillServiceImpl"
+		  p:paymentsBillDAO-ref="paymentsBillDAO"
+	/>
+	<bean id="alertService"
+		  class="com.probada.alert.service.AlertServiceImpl"
+		  p:alertDAO-ref="alertDAO"
+	/>
+	<bean id="myTaskService"
+		  class="com.probada.myWork.service.MyTaskServiceImpl"
+		  p:myTaskDAO-ref="myTaskDAO"
+	/>
+
+	<!-- utils -->
+	<bean id="userUtil" class="com.probada.util.UserUtil"/>
+	<bean id="taskUtil" class="com.probada.util.TaskUtil"/>
+	<bean id="projectUtil" class="com.probada.util.ProjectUtil"/>
+	<bean id="issueUtil" class="com.probada.util.IssueUtil"/>
+	<bean id="documentUtil" class="com.probada.util.DocumentUtil"/>
+	<bean id="collaboUtil" class="com.probada.util.CollaboUtil"/>
+	
+
+	<!-- mail -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.stmp.host}" />
+		<property name="port" value="${mail.stmp.port}" />
+		<property name="username" value="${AdminMail.id}" />
+		<property name="password" value="${AdminMail.password}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

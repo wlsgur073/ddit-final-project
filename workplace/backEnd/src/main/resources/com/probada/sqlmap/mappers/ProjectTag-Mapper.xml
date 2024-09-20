@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectTag-Mapper">
+
+	<select id="selectTagNameList" resultType="projectTag">
+		SELECT
+			C.PROJ_NO, A.TAG_NO, A.TAG_NAME
+		FROM
+			TAG A
+		JOIN
+			PROJECT_TAG B ON A.TAG_NO = B.TAG_NO
+		JOIN
+			PROJECT C ON B.PROJ_NO = C.PROJ_NO
+		WHERE
+			C.PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectProjectListByTagNo" parameterType="String" resultType="projectTag">
+		SELECT
+		  B.TAG_NO
+      	  ,A.PROJ_NO
+      	  ,<include refid="findTagName" />
+		  ,A.TITLE AS PROJECT_TITLE
+		  ,A.STARTDATE AS START_DATE
+		  ,A.ENDDATE AS END_DATE
+		  ,<include refid="formatStatusCodeNoToCodeName" />
+		  ,D.NICKNAME AS LEADER
+		FROM
+		  PROJECT A
+		JOIN PROJECT_TAG B ON(A.PROJ_NO = B.PROJ_NO)
+		JOIN USER_PROJECT C ON(A.PROJ_NO = C.PROJ_NO)
+		JOIN "USER" D ON(C.USER_ID = D.USER_ID)
+		WHERE B.TAG_NO = #{tagNo}
+		AND C.ROLE = 'A303'
+	</select>
+
+	<select id="selectTagNoByTagName" parameterType="projectTag" resultType="String">
+		SELECT
+			TAG_NO
+		FROM
+			TAG
+		WHERE
+			TAG_NAME = #{tagName}
+	</select>
+
+	<insert id="insertProjectTagByProjNo" parameterType="projectTag">
+		INSERT INTO
+			TAG(TAG_NO, TAG_NAME)
+		VALUES(#{tagNo},#{tagName})
+	</insert>
+
+	<insert id="insertProjectTagRelation" parameterType="projectTag">
+		INSERT INTO PROJECT_TAG(PROJ_NO, TAG_NO)
+		VALUES(#{projNo},#{tagNo})
+	</insert>
+
+	<select id="countProjectTagByTagName" resultType="int" parameterType="projectTag">
+		SELECT
+			COUNT(*)
+		FROM
+			TAG
+		WHERE
+			TAG_NAME = #{tagName}
+	</select>
+
+	<sql id="formatStatusCodeNoToCodeName">
+		(SELECT
+			CODE_NAME
+		FROM
+			COMMON_CODE
+		WHERE
+			COMMON_CODE.CODE_NO = A.STATUS) AS STATUS
+	</sql>
+
+	<sql id="findTagName">
+		(SELECT TAG_NAME
+		 FROM TAG
+		 WHERE TAG_NO = #{tagNo}) AS TAG_NAME
+	</sql>
+
+	<select id="selectProjTagSeqNext" resultType="int">
+		SELECT
+			TAG_SEQ.NEXTVAL AS TAG_NO FROM DUAL
+	</select>
+
+</mapper>

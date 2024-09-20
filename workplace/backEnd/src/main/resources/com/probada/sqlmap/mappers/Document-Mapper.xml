@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mybatis는 namespace가 필수다. -->
+<!-- select문 안에는 주석도 text로 인식하기 때문에 주석쓰면 안된다 -->
+	<mapper namespace="Document-Mapper">
+
+
+	<resultMap id="DocResultMap" type="com.probada.document.vo.FileVO">
+		<result column="ETC" property="etc" />
+		<result column="USER_ID" property="USER_ID" />
+		<result column="DOC_NO" property="DOC_NO" />
+		<result column="CPROJ_NO" property="CPROJ_NO" />
+		<result column="FILENAME" property="name" />
+		<result column="ISDIRECTORY" property="isDirectory"  />
+		<result column="HASDIRECTORY" property="hasDirectories" />
+		<result column="UPLOADPATH" property="path" />
+		<result column="FILETYPE" property="extension" />
+		<result column="DOC_SIZE" property="size" />
+		<result column="REGDATE" property="created" />
+		<result column="UPDATEDATE" property="modified" />
+
+	</resultMap>
+	<select id="selectDocumentListByUserId" parameterType="str" resultType="com.probada.document.vo.FileVO">
+		SELECT CONCAT(A.FILENAME, A.FILETYPE) AS NAME
+			 , B.TITLE AS PROJTITLE
+			 , A.REGDATE AS CREATED
+			 , A.UPDATEDATE AS MODIFIED
+			 , A.DOC_SIZE AS "SIZE"
+		  FROM DOCUMENT A, PROJECT B
+		 WHERE A.PROJ_NO = B.PROJ_NO
+	       AND A.USER_ID = #{userId}
+		   AND A.ISDIRECTORY = '0'
+		 ORDER BY A.UPDATEDATE
+	</select>
+
+	<select id="selectProjByTitle" parameterType="str" resultType="str">
+			select proj_no from PROJECT
+				where title = #{title}
+	</select>
+
+	<select id="selectDocList" resultMap="DocResultMap">
+			select
+				*
+			from DOCUMENT
+	</select>
+
+
+
+	 <update id="insertDocument" parameterType="com.probada.document.vo.FileVO">
+
+		INSERT INTO document(DOC_NO, DOC_CONT_NO, PROJ_NO, USER_ID, UPLOADPATH,
+							 FILENAME, FILETYPE, REGDATE,UPDATEDATE,"DESC",
+							STATUS,DIST,ISDIRECTORY,HASDIRECTORY,DOC_SIZE,ETC)
+
+
+	     VALUES (#{DOC_NO}
+	           , 1
+	           , #{PROJ_NO}
+	           , #{USER_ID}
+	           , #{path}
+	           , #{name}
+	           , #{extension}
+	           , sysdate
+	           , sysdate
+	           , #{DESC}
+	           , #{STATUS}
+	           , #{DIST}
+	           , #{isDirectory}
+	           , #{hasDirectories}
+	           , #{size}
+	           , #{etc}
+	           )
+	</update>
+
+	 <update id="insertDocumentCollabo" parameterType="com.probada.document.vo.FileVO">
+
+		INSERT INTO document(DOC_NO, DOC_CONT_NO, CPROJ_NO, USER_ID, UPLOADPATH,
+							 FILENAME, FILETYPE, REGDATE,UPDATEDATE,"DESC",
+							STATUS,DIST,ISDIRECTORY,HASDIRECTORY,DOC_SIZE,ETC)
+			VALUES (#{DOC_NO}
+		           , 1
+		           , #{CPROJ_NO}
+		           , #{USER_ID}
+		           , #{path}
+		           , #{name}
+		           , #{extension}
+		           , sysdate
+		           , sysdate
+		           , #{DESC}
+		           , #{STATUS}
+		           , #{DIST}
+		           , #{isDirectory}
+		           , #{hasDirectories}
+		           , #{size}
+		           , #{etc}
+		           )
+	</update>
+
+	<update id="updateDocument" parameterType="com.probada.document.vo.FileVO">
+			update document
+						set UPLOADPATH=#{path},
+							FILENAME=#{name}
+						where DOC_NO=#{DOC_NO}
+
+	</update>
+
+
+	<select id="selectDocumentByPath"  resultMap="DocResultMap"  parameterType="str">
+		select
+		*
+		from document
+		where DOC_NO=#{DOC_NO}
+	</select>
+
+
+
+	<update id="deleteDocument" parameterType="str">
+		delete
+		from document
+		where DOC_NO=#{DOC_NO}
+	</update>
+
+
+	<select id="selectDocumentSeqNext" resultType="str">
+		select 'doc'||doc_seq.NEXTVAL as DOC_NO from dual
+	</select>
+
+
+
+	<select id="selectDocumentByUserId" resultMap="DocResultMap" parameterType="str">
+
+		select  * from document
+		where user_id =#{USER_ID} and
+			  isdirectory = 0
+
+	</select>
+
+
+
+	<select id="selectDefaultDirectoryMyProject" resultMap="DocResultMap" parameterType="str">
+				SELECT *
+			 		 FROM DOCUMENT
+
+			 		 WHERE ISDIRECTORY = 1
+			 		       AND ETC = 0
+  			   			   AND PROJ_NO IN (SELECT DISTINCT PROJ_NO FROM USER_PROJECT WHERE USER_ID = #{USER_ID})
+	</select>
+
+
+   	<select id="selectDirectoryMyProject" resultMap="DocResultMap" parameterType="str">
+				SELECT *
+			 		 FROM DOCUMENT
+
+			 		 WHERE ISDIRECTORY = 1
+			 			   AND USER_ID = #{USER_ID}
+			 		       AND ETC = 1
+  			   			   AND PROJ_NO IN (SELECT DISTINCT PROJ_NO FROM DOCUMENT WHERE USER_ID = #{USER_ID})
+	</select>
+
+
+
+
+
+
+	<select id="selectDocumentByDefaultProj" resultMap="DocResultMap" parameterType="str">
+
+		select * from document
+
+			where ETC = 0
+             AND PROJ_NO =#{PROJ_NO}
+
+	</select>
+
+  <!--  AND ISDIRECTORY = 0 -->
+	<select id="selectDocumentByMyProj" resultMap="DocResultMap" parameterType="com.probada.document.vo.ProjectUserVO">
+	select * from document
+			where ETC = 1
+			 AND USER_ID =#{userId}
+
+             AND PROJ_NO =#{projNo}
+	</select>
+
+	<select id="selectDocumentListByProjNo" resultMap="DocResultMap" parameterType="com.probada.document.vo.ProjectUserVO">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 PROJ_NO = #{projNo}
+
+	</select>
+
+	<select id="selectDashDocumentByProjNo" resultMap="DocResultMap" parameterType="com.probada.document.vo.ProjectUserVO">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 PROJ_NO = #{projNo}
+		AND
+			isdirectory = 0
+	</select>
+
+	<select id="selectDocumentListForProjDetail" resultMap="DocResultMap" parameterType="String">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 PROJ_NO = #{projNo}
+		AND
+			UPLOADPATH LIKE '%'||'중요첨부/'||'%'
+	</select>
+
+	<select id="selectDocumentListBytaskTitleANDprojNo" resultMap="DocResultMap" parameterType="task">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 PROJ_NO = #{projNo}
+		AND
+			UPLOADPATH LIKE '%'||'/업무/'||#{title}||'/%'
+
+	</select>
+
+	<select id="selectDocumentListBytaskTitleANDcprojNo" resultMap="DocResultMap" parameterType="collaboTaskVO">
+		SELECT *
+		FROM DOCUMENT
+		WHERE CPROJ_NO = #{cprojNo}
+		AND	UPLOADPATH LIKE '%'||'/업무/'||#{title}||'/%'
+	</select>
+
+	<select id="selectDocumentListByIssueTitleAndProjNo" resultMap="DocResultMap" parameterType="issue">
+		SELECT *
+		  FROM DOCUMENT
+		 WHERE PROJ_NO = #{projNo}
+		   AND UPLOADPATH LIKE '%'||'/이슈/'||#{title}||'/%'
+	</select>
+	
+	
+	<select id="selectDocumentListForCprojDetail" resultMap="DocResultMap" parameterType="String">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 CPROJ_NO = #{cprojNo}
+		AND
+			UPLOADPATH LIKE '%'||'중요첨부/'||'%'
+	</select>
+	
+	<select id="selectDocumentListByCprojNo" resultMap="DocResultMap" parameterType="String">
+		SELECT
+			*
+		FROM
+			DOCUMENT
+		WHERE
+			 CPROJ_NO = #{cprojNo}
+
+	</select>
+
+	<!-- <select id="selectMemberList" resultType="member">
+		select
+		*
+		from
+		member
+		order by regDate desc
+	</select>
+
+	<select id="selectMemberListCount" resultType="int">
+		select
+		count(*)
+		from
+		member
+		order by regDate desc
+	</select>
+
+
+	<sql id="search">
+		<if test="searchType == 'i'.toString()">
+			and id like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'p'.toString()">
+			and phone like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'e'.toString()">
+			and email like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'n'.toString()">
+			and name like '%'||#{keyword}||'%'
+		</if>
+	</sql>
+
+
+	<select id="selectSearchMemberList" resultType="member">
+		select
+		*
+		from member
+		where id is not null
+		<include refid="search"/>
+		order by regDate desc
+	</select>
+
+
+	<select id="selectSearchMemberListCount" resultType="int">
+		select
+		count(*)
+		from member
+		where id is not null
+		<include refid="search"/>
+	</select>
+
+
+	<select id="selectMemberById" resultType="member" parameterType="str">
+		select
+		*
+		from member
+		where id = #{id}
+	</select>
+
+	<select id="selectMemberByPictureId" resultType="member" parameterType="str">
+		select
+		*
+		from member
+		where picture = #{picture}
+	</select>
+
+
+
+
+
+	<update id="insertMember" parameterType="member">
+		insert into
+		member (id, pwd, email, phone, picture, name, authority)
+		values(#{id}, #{pwd}, #{email}, #{phone}, #{picture}, #{name}, #{authority})
+	</update>
+
+
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		pwd=#{pwd},email=#{email},phone=#{phone},name=#{name},picture=#{picture}
+
+		<if test="authority != null">
+			,authority=#{authority}
+		</if>
+
+		where id=#{id}
+
+	</update>
+
+
+	<select id="selectMemberEnable" resultType="member" parameterType="str">
+		select
+		enabled
+		from member
+		where id = #{id}
+	</select>
+
+
+	<update id="deleteMember" parameterType="str">
+		delete
+		from member
+		where id=#{id}
+	</update>
+
+
+	<update id="enabledMember">
+		update member
+		set enabled=#{enabled}
+		where id=#{id}
+	</update>
+	 -->
+</mapper>

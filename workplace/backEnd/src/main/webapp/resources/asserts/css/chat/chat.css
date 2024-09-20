@@ -1,0 +1,110 @@
+ #ChatUserSeok .demo-section {
+        max-width: none;
+        width: 480px;
+    }
+
+    #ChatUserSeok .k-listbox {
+        width: 210px;
+        height: 350px;
+    }
+
+    #ChatUserSeok .k-listbox:first-child {
+        width: 256px;
+        margin-right: 1px;
+    }
+
+    .k-ghost {
+        display:none!important;
+    }
+
+    .custom-placeholder {
+        opacity: 0.4;
+    }
+
+    #ChatUserSeok .k-item {
+        line-height: 1em;
+    }
+
+	
+
+
+    /* Material Theme padding adjustment*/
+
+    .k-material #ChatUserSeok .k-item,
+    .k-material #ChatUserSeok .k-item.k-state-hover,
+    .k-materialblack #ChatUserSeok .k-item,
+    .k-materialblack #ChatUserSeok .k-item.k-state-hover {
+        padding-left: 5px;
+        border-left: 0;
+    }
+
+    .k-item > span {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        display: inline-block;
+        vertical-align: top;
+        margin: 20px 10px 10px 5px;
+    }
+
+    #ChatUserSeok .k-item > span:first-child,
+    .k-item.k-drag-clue > span:first-child {
+        -moz-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+        -webkit-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+        box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+        margin: 10px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+
+    #ChatUserSeok h3,
+    .k-item.k-drag-clue h3 {
+        font-size: 1.2em;
+        font-weight: normal;
+        margin: 0 0 1px 0;
+        padding: 0;
+    }
+
+    #ChatUserSeok p {
+        margin: 0;
+        padding: 0;
+        font-size: .8em;
+    }
+    
+    
+    #ChatUserSeok span.k-state-default {
+    width: 50px;
+    height: 50px;
+	}
+	
+	#ChatUserSeok .k-listbox .k-item {
+	    padding: 2px 0px !important; 
+	}
+	    
+	    
+	.chatInvateUser{
+	
+	 /*   display: block; */
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	  width: 100px;
+	}
+
+	    
+      
+ .projSearchTitle{
+ 
+    display: inline-block;
+  	overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	  width: 250px;
+ 
+ 
+ 
+ }
+    

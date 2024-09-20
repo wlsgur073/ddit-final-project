@@ -1,0 +1,187 @@
+/* project-detail */
+.project-member {
+  text-align: center;
+}
+.project-title {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+.project-member img {
+  width: 40px;
+  height: 40px;
+}
+.project-detail_body {
+  padding-bottom: 20px;
+}
+.project-bg-btn {
+  margin: 0 auto;
+}
+.header-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* project-task */
+.task-member {
+  text-align: center;
+}
+.task-bold {
+  font-weight: bold;
+}
+.task-sm {
+  font-size: 0.8em;
+}
+.task-member img {
+  width: 50px;
+  height: 50px;
+}
+.task-detail-body {
+  padding-bottom: 20px;
+}
+.task-bg-btn {
+  margin: 0 auto;
+}
+
+/project-list/
+.project-list.card {
+  margin-bottom: 10px;
+}
+.project-list-a {
+  color: black;
+
+}
+.project-list-sort {
+  margin-bottom: 5px;
+}
+.project-list-btn {
+  width: 50px;
+  height: 50px;
+  float: right;
+}
+.card-body.project-list {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.projRegistPicture{
+	border: 1px solid black;
+	/*백그라운드 위치 옵션을 center 정중앙에 위치 */
+	background-position: center;
+	/*기본적으로 백그라운드의 옵션은 repeat이다. */
+	background-repeat: no-repeat;
+	/* 백그라운드 이미지를 보여주기 위한 크기 옵션 */
+	background-size:cover;
+	weight: 400px; height : 200px;
+	margin:15px;
+}
+.x_panel {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 17px;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e6e9ed;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  column-break-inside: avoid;
+  opacity: 1;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  margin-top : 0px;
+}
+.form-group.custom-validate {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+}
+
+.form-group.custom-validate input:focus {
+    outline: 0;
+    border-color: #777;
+}
+
+.form-group.custom-validate.success input {
+    border-color: #2ecc71;
+}
+
+.custom-validate.error input {
+    border-color: #e74c3c;
+}
+i.fa-check-circle, i.fa-exclamation-circle {
+    visibility: hidden;
+    position: absolute;
+  float: right;
+    top: 20%;
+    right: 10px;
+}
+
+.form-group.custom-validate.success i.fa-check-circle {
+    color: #2ecc71;
+    visibility: visible;
+}
+.k-splitbar.k-state-default.k-splitbar-horizontal.k-splitbar-draggable-horizontal{
+	height: 715px!important;
+}
+.form-group.custom-validate.error i.fa-exclamation-circle {
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.form-group.custom-validate small {
+    color: #e74c3c;
+    position: absolute;
+    visibility: hidden;
+}
+
+.form-group.custom-validate.error small {
+    visibility: visible;
+}
+.form-group.custom-validate label{
+  left: 5px;
+  top: 30%;
+}
+.modal-backdrop{
+	display:none!important;
+}
+.k-gantt-footer {
+    display: none;
+}
+.k-gantt-treelist td[role="gridcell"]{
+	padding:0px!important;
+	padding-left:5px!important;
+	overflow:hidden!important;
+}
+.k-task-dot{
+	display:none!important;
+}
+.k-task-complete{
+	display:none!important;
+}
+.k-link.k-task-delete{
+	display:none!important;
+}
+.k-task.k-task-single{
+	background-color:#8491db;
+}
+.tagsinput .tag:after {
+    display: none;
+}
+div.k-grid-norecords{
+	justify-content: center;
+}
+#inviteIdTag_tag{
+	width:80px!important;
+}
+
+.blink{
+	animation-duration: 1.5s;
+	animation-name: newData;
+}
+
+@keyframes newData {
+	from{
+		background: #4c4d4e;
+	}
+	to{
+		background: white;
+	}
+}

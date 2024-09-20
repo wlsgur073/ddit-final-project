@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Collabo-Mapper">
+	
+	<select id="selectCollaboList" resultType="com.probada.collabo.vo.CollaboVO">
+		SELECT
+			 CPROJ_NO
+			,TITLE
+			,STARTDATE
+			,ENDDATE
+			,PRIVACY
+			,NOTICE
+			,NOTICE_CONT
+			,UPDATEDATE
+			,<include refid="statusForCollabo"/>
+			,INTRO
+			,DOC_CONT_NO
+			,LIKE_COUNT
+		FROM
+			C_PROJECT
+	</select>
+	
+	<select id="selectCollaboListByUserId" parameterType="String" resultType="com.probada.collabo.vo.CollaboVO">
+		SELECT
+			A.CPROJ_NO
+			,A.TITLE
+			,A.STARTDATE
+			,A.ENDDATE
+			,<include refid="privacyForCollaboA"/>
+			,A.NOTICE
+			,A.NOTICE_CONT
+			,A.UPDATEDATE
+			,<include refid="statusForCollaboA"/>
+			,A.INTRO
+			,A.DOC_CONT_NO
+			,A.LIKE_COUNT
+		FROM
+			C_PROJECT A
+        JOIN
+        	C_PROJECT_R B ON(A.CPROJ_NO = B.CPROJ_NO)
+        WHERE
+        	B.USER_ID = #{userId}
+        ORDER BY  
+        	A.STARTDATE DESC	
+	</select>
+	
+	<select id="collaboCount" resultType="String" parameterType="String">
+		SELECT COUNT(*) as CPROJ_NO
+		  FROM C_PROJECT_R
+	   	 WHERE USER_ID = #{userId} 
+	</select>
+	
+	<select id="selectProjectCountInCprojByUserId" resultType="int" parameterType="String">
+		SELECT
+	          COUNT(*)
+	      FROM
+	          C_PROJECT A
+	      JOIN
+	          C_PROJECT_R B ON(A.CPROJ_NO = B.CPROJ_NO)
+	     WHERE
+	          B.USER_ID = #{userId}
+	      AND
+	          IS_DELETED = 0  
+	</select>
+	
+	<select id="selectCollaboByCprojNo" resultType="com.probada.collabo.vo.CollaboVO" parameterType="String">
+			SELECT
+			    CPROJ_NO
+			   ,TITLE
+			   ,STARTDATE
+			   ,ENDDATE
+			   ,<include refid="privacyForCollabo"/>
+			   ,NOTICE
+			   ,NOTICE_CONT
+			   ,UPDATEDATE
+			   ,<include refid="statusForCollabo"/>
+			   ,INTRO
+			   ,DOC_CONT_NO
+			   ,LIKE_COUNT
+			FROM
+			    C_PROJECT
+			WHERE CPROJ_NO = #{cprojNo}    
+	</select>
+	
+	<select id="selectCollaboSubProj" parameterType="String" resultType="com.probada.collabo.vo.CollaboVO">
+		SELECT A.PROJ_NO
+      		  ,A.TITLE
+              ,B.CPROJ_NO
+		  FROM 
+     		   PROJECT A
+		  JOIN 
+    		   C_PROJECT_R B ON (A.PROJ_NO = B.PROJ_NO)
+		 WHERE
+    		   B.CPROJ_NO = #{cprojNo}
+	
+	</select>
+	
+	<select id="selectUserByCprojNo" resultType="com.probada.user.vo.UserVO" parameterType="str">
+		SELECT
+    		 *
+		FROM
+    		"USER" A
+		JOIN
+			C_PROJECT_R B ON (A.USER_ID = B.USER_ID)
+		WHERE
+			CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<select id="selectCollaboTagList">
+		DELETE FROM C_PROJECT
+		      WHERE
+    				CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<select id="insertCollabo" parameterType="com.probada.collabo.vo.CollaboVO">
+		INSERT INTO C_PROJECT (
+		            CPROJ_NO
+		           ,STARTDATE
+		           
+		) VALUES (
+		            #{cprojNo}
+		           ,SYSDATE
+		        )
+	</select>
+	
+	<select id="insertCollaboUserRelation" parameterType="com.probada.collabo.vo.CollaboVO">
+		INSERT INTO C_PROJECT_R (
+				    USER_ID
+				   ,PROJ_NO
+				   ,CPROJ_NO
+				   ,ROLE
+				) VALUES (
+				    #{userId}
+				   ,#{projNo}
+				   ,#{cprojNo}
+				   ,'A303'
+				)
+	</select>
+	
+	<select id="updateCollaboDetail" parameterType="com.probada.collabo.vo.CollaboVO">
+		UPDATE C_PROJECT 
+		   SET 
+		        TITLE = #{title}
+		       ,PRIVACY = #{privacy}
+		       ,STARTDATE = #{startdate}
+		       ,ENDDATE = #{enddate} 
+		       ,INTRO = #{intro} 
+		  WHERE CPROJ_NO = #{cprojNo}   
+	</select>
+	
+	<select id="updateCollaboNotice" parameterType="com.probada.collabo.vo.CollaboVO">
+		UPDATE C_PROJECT
+    	   SET
+         	   NOTICE = #{notice}
+        	  ,NOTICE_CONT = #{noticeCont}
+        	  ,UPDATEDATE = SYSDATE
+		WHERE CPROJ_NO = #{cprojNo}
+	</select>
+	
+	<update id="registInviteCollaboMail" parameterType="com.probada.collabo.command.CollaboCommand">
+		INSERT INTO MAIL (
+			  MAIL_NO
+			, TITLE
+			, USER_TO
+			, USER_FROM
+			, CONTENT
+			, REGDATE
+			, STATUS
+			, DIST
+			, RECV_DEL
+			, SENT_DEL
+			
+			) VALUES (
+			
+			  #{mailNo}
+			, #{title}
+			, #{userTo}
+			, #{userFrom}
+			, #{content}
+			, SYSDATE
+			, 'A801'
+			, 'B901'
+			, '1'
+			, '1'
+			)
+	</update>
+	
+	<select id="selectCollaboMailSequenceNextValue" resultType="int">
+		SELECT MAIL_SEQ.NEXTVAL AS MAIL_NO
+		  FROM DUAL
+	</select>
+	
+	<select id="selectProjectTitleCollabo" resultType="com.probada.collabo.vo.CollaboVO" parameterType="com.probada.collabo.vo.CollaboVO">
+		SELECT TITLE
+			  ,A.PROJ_NO
+		  FROM USER_PROJECT A, PROJECT B
+	     WHERE A.PROJ_NO = B.PROJ_NO
+		   AND A.USER_ID = #{userId} 	
+	</select>
+	
+	<select id="selectCprojectNameByCprojNo" resultType="String" parameterType="String">
+		SELECT
+			TITLE
+		FROM
+			C_PROJECT
+		WHERE
+			CPROJ_NO = #{cprojNo}
+	</select>
+
+	<select id="selectCprojectNameByProjNo" resultType="com.probada.collabo.vo.CollaboVO" parameterType="String">
+		SELECT A.CPROJ_NO
+			  ,A.TITLE
+			  ,B.PROJ_NO
+		 FROM C_PROJECT A, C_PROJECT_R B
+		WHERE A.CPROJ_NO = B.CPROJ_NO 
+		  AND B.PROJ_NO = #{projNo}
+	</select>
+	
+	
+	<sql id="statusForCollabo">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = C_PROJECT.STATUS) AS STATUS
+	</sql>
+	
+	<sql id="statusForCollaboA">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.STATUS) AS STATUS
+	</sql>
+
+	<sql id="privacyForCollabo">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = C_PROJECT.PRIVACY) AS PRIVACY
+	</sql>
+	
+	<sql id="privacyForCollaboA">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.PRIVACY) AS PRIVACY
+	</sql>
+	
+	<select id="selectCollaboSeqNext" resultType="int">
+			SELECT C_PROJECT_SEQ.NEXTVAL AS CPROJ_NO
+  			  FROM DUAL
+	</select>
+	
+	<select id="selectUserRole" resultType="str" parameterType="collaboVO">
+	  SELECT
+			ROLE
+		FROM
+			C_PROJECT_R
+		WHERE
+			CPROJ_NO = #{cprojNo}
+		AND
+			USER_ID = #{userId}
+		AND
+			IS_DELETED = 0
+	</select>
+	
+	<update id="updateUserRole" parameterType="collaboVO">
+	  UPDATE
+			C_PROJECT_R
+		SET
+			ROLE = #{role}
+		WHERE
+			CPROJ_NO = #{cprojNo}
+		AND
+			USER_ID = #{userId}
+	</update>
+
+</mapper>

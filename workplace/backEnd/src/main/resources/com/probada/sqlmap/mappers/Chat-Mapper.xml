@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mybatis는 namespace가 필수다. -->
+<!-- select문 안에는 주석도 text로 인식하기 때문에 주석쓰면 안된다 -->
+	<!--	select user_id from user_project a, project b
+				where a.PROJ_NO = b.PROJ_NO
+				and b.title = #{title}-->
+	<mapper namespace="Chat-Mapper">
+
+
+	
+
+
+	<select id="selectMyProjTitleList" resultType="String" parameterType="String">	
+	
+		select title from user_project a, project b
+			where a.PROJ_NO = b.PROJ_NO
+			and a.USER_ID=#{userId}
+	</select>
+
+	<select id="selectMyProjUserList" resultType="USER" parameterType="String">	
+	
+		select  c.* from user_project a, project b, "USER" c
+				where a.PROJ_NO = b.PROJ_NO
+                and c.USER_ID = a.USER_ID
+				and b.title = #{title}
+	
+	</select>
+	
+	<update id="createChatRoom" parameterType="com.probada.chat.vo.ChatVO">
+		insert into
+		chatroom 
+		values(
+         #{chatroomNo}
+        ,#{userId}
+        ,#{projNo}
+        ,#{title}
+        ,sysdate
+        ,#{realRoom}
+        )
+	</update>
+	
+	
+	<select id="selectChatSeqNext" resultType="str">
+		select 'chat'||chat_seq.NEXTVAL as CHATROOM_NO from dual
+	</select>
+	
+
+	<select id="selectProjNoByTitle" resultType="String" parameterType="String">	
+		select proj_no from PROJECT
+			where title = #{title}   
+	</select>
+
+	<select id="selectRoomById" resultType="com.probada.chat.vo.ChatVO" parameterType="String">	
+		select * from CHATROOM
+			where user_id = #{userId}
+	</select>
+
+	<select id="selectUserByRoomId" resultType="String" parameterType="String">	
+		select user_id from CHATROOM
+			   where title = #{title}       
+	</select>
+
+
+
+
+
+<select id="selectUserVOByRoomId" resultType="User" parameterType="String">	
+		
+		select b.* from CHATROOM a, "USER" b
+			where a.REALROOM = #{realRoom} 
+			and a.USER_ID = b.user_id
+		
+</select>
+
+
+
+<select id="selectRealChatSeqNext" resultType="str">
+		select 'realChat'||REAL_CHAT_REQ.NEXTVAL as REALCHATROOM_NO from dual
+
+</select>
+	
+
+<select id="selectUserInRoom" resultType="str" parameterType="str">
+		 select USER_ID from CHATROOM 
+  				where REAL_ROOM = #{realRoom}
+
+</select> 
+
+<select id="selectChatRoom" resultType="com.probada.chat.vo.ChatVO" parameterType="com.probada.chat.vo.ChatVO">
+		 select * from CHATROOM 
+  				where REALROOM = #{realRoom} 
+  					and USER_ID=#{userId}
+  					ORDER BY REGDATE
+</select>
+
+
+<select id="selectChatByChatRoomNo" resultType="com.probada.chat.vo.ChatVO" parameterType="str">
+
+		select * from chatroom 
+			where CHATROOM_NO = #{chatroomNo}
+			ORDER BY REGDATE
+</select>
+
+
+
+
+<select id="selectMessage" resultType="com.probada.chat.vo.ChatMessageVO" parameterType="com.probada.chat.vo.ChatMessageVO">
+		 select  
+		 
+		*
+		 
+		 from CHATROOM_MESSAGE 
+  				where REALROOM = #{realRoom} 
+  			order by regdate
+  		
+</select>
+
+<update id="insertMessage" parameterType="com.probada.chat.vo.ChatMessageVO">
+		insert into
+		CHATROOM_MESSAGE
+		values(
+         #{chatroomMsgNo}
+        ,#{userId}
+        ,#{content}
+        ,sysdate
+        ,1
+        ,#{realRoom}
+        ,#{nickname}
+        ,#{picture}
+        )
+	</update>
+	
+
+<select id="selectMessageSeqNext" resultType="str">
+		select 'message'||CHATROOM_MSG_NO_SEQ.NEXTVAL as CHATROOM_MSG_NO from dual
+
+</select>
+
+
+
+<update id="updateChatRoom" parameterType="com.probada.chat.vo.ChatMessageVO">
+
+	
+	UPDATE chatroom
+		SET
+		title = #{title}
+		WHERE
+		REALROOM = #{realRoom}
+		
+</update>
+
+
+<update id="deleteChatRoom" parameterType="str">
+
+	
+	delete
+		from chatroom
+		where CHATROOM_NO = #{chatroomNo}
+		
+</update>
+
+
+
+
+
+	<!-- <select id="selectMemberList" resultType="member">
+		select
+		*
+		from
+		member
+		order by regDate desc
+	</select>
+
+	<select id="selectMemberListCount" resultType="int">
+		select
+		count(*)
+		from
+		member
+		order by regDate desc
+	</select>
+
+
+	<sql id="search">
+		<if test="searchType == 'i'.toString()">
+			and id like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'p'.toString()">
+			and phone like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'e'.toString()">
+			and email like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType == 'n'.toString()">
+			and name like '%'||#{keyword}||'%'
+		</if>
+	</sql>
+
+
+	<select id="selectSearchMemberList" resultType="member">
+		select
+		*
+		from member
+		where id is not null
+		<include refid="search"/>
+		order by regDate desc
+	</select>
+
+
+	<select id="selectSearchMemberListCount" resultType="int">
+		select
+		count(*)
+		from member
+		where id is not null
+		<include refid="search"/>
+	</select>
+
+
+	<select id="selectMemberById" resultType="member" parameterType="str">
+		select
+		*
+		from member
+		where id = #{id}
+	</select>
+
+	<select id="selectMemberByPictureId" resultType="member" parameterType="str">
+		select
+		*
+		from member
+		where picture = #{picture}
+	</select>
+
+
+
+
+
+	<update id="insertMember" parameterType="member">
+		insert into
+		member (id, pwd, email, phone, picture, name, authority)
+		values(#{id}, #{pwd}, #{email}, #{phone}, #{picture}, #{name}, #{authority})
+	</update>
+
+
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		pwd=#{pwd},email=#{email},phone=#{phone},name=#{name},picture=#{picture}
+
+		<if test="authority != null">
+			,authority=#{authority}
+		</if>
+
+		where id=#{id}
+
+	</update>
+
+
+	<select id="selectMemberEnable" resultType="member" parameterType="str">
+		select
+		enabled
+		from member
+		where id = #{id}
+	</select>
+
+
+	<update id="deleteMember" parameterType="str">
+		delete
+		from member
+		where id=#{id}
+	</update>
+
+
+	<update id="enabledMember">
+		update member
+		set enabled=#{enabled}
+		where id=#{id}
+	</update>
+	 -->
+
+
+
+</mapper>
+
+
+

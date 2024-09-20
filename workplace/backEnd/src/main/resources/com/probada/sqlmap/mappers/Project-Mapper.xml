@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Project-Mapper">
+
+	<select id="selectProjectList" resultType="com.probada.project.vo.ProjectVO">
+		SELECT
+			PROJ_NO
+			,TITLE
+			,STARTDATE
+			,ENDDATE
+			,<include refid="privacyForProject" />
+			,NOTICE
+			,NOTICE_CONT
+			,UPDATEDATE
+			,<include refid="statusForProject" />
+			,INTRO
+			,DOC_CONT_NO
+			,LIKE_COUNT
+		FROM
+			project
+	</select>
+
+	<select id="selectProjectListByUserId" parameterType="String" resultType="com.probada.project.vo.ProjectVO">
+		SELECT
+			A.PROJ_NO
+			,A.TITLE
+			,A.STARTDATE
+			,A.ENDDATE
+			,<include refid="privacyForProjectAsA" />
+			,A.NOTICE
+			,A.NOTICE_CONT
+			,A.UPDATEDATE
+			,<include refid="statusForProjectAsA" />
+			,A.INTRO
+			,A.DOC_CONT_NO
+			,A.LIKE_COUNT
+		FROM
+			project A
+        JOIN
+        	USER_PROJECT B ON(A.PROJ_NO = B.PROJ_NO)
+        WHERE
+        	B.USER_ID = #{userId}
+        AND
+			IS_DELETED = 0
+	</select>
+
+	<select id="selectProjectCountInProjByUserId" resultType="int" parameterType="String">
+		SELECT
+			COUNT(*)
+		FROM
+			PROJECT A
+		JOIN
+			USER_PROJECT B ON(A.PROJ_NO = B.PROJ_NO)
+		WHERE
+			B.USER_ID = #{userId}
+		AND
+			IS_DELETED = 0
+	</select>
+
+
+	<select id="selectProjectByProjNo" resultType="com.probada.project.vo.ProjectVO" parameterType="String">
+		SELECT
+			PROJ_NO
+			,TITLE
+			,STARTDATE
+			,ENDDATE
+			,<include refid="privacyForProject" />
+			,NOTICE
+			,NOTICE_CONT
+			,UPDATEDATE
+			,<include refid="statusForProject" />
+			,INTRO
+			,DOC_CONT_NO
+			,LIKE_COUNT
+		FROM
+			project
+		WHERE
+			PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectProjectNameByProjNo" resultType="String" parameterType="String">
+		SELECT
+			TITLE
+		FROM
+			PROJECT
+		WHERE
+			PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectProjectTagList" resultType="com.probada.project.vo.ProjectVO" parameterType="com.probada.project.vo.ProjectVO">
+		SELECT
+			TAG_NAME
+		FROM
+			PROJ_TAG
+		WHERE
+			PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectUserRole" resultType="str" parameterType="com.probada.project.vo.ProjectVO">
+		SELECT
+			ROLE
+		FROM
+			USER_PROJECT
+		WHERE
+			PROJ_NO = #{projNo}
+		AND
+			USER_ID = #{userId}
+		AND
+			IS_DELETED = 0
+	</select>
+
+	<select id="countDeletedUserByUserId" resultType="int" parameterType="com.probada.project.vo.ProjectVO">
+		SELECT
+			COUNT(*)
+		FROM
+			USER_PROJECT
+		WHERE
+			PROJ_NO = #{projNo}
+		AND
+			USER_ID = #{userId}
+		AND
+			IS_DELETED = 1
+	</select>
+
+	<select id="updateProjectNotice" parameterType="com.probada.project.vo.ProjectVO">
+		UPDATE
+			PROJECT
+		SET
+			NOTICE = #{notice},
+			NOTICE_CONT = #{noticeCont},
+			UPDATEDATE = sysdate
+		WHERE
+			PROJ_NO = #{projNo}
+	</select>
+
+	<insert id="insertProject" parameterType="com.probada.project.vo.ProjectVO">
+		INSERT INTO
+			PROJECT
+			(PROJ_NO, TITLE, STARTDATE, ENDDATE, PRIVACY, INTRO)
+		VALUES
+			(#{projNo},#{title},#{startdate},#{enddate},#{privacy},#{intro})
+	</insert>
+
+	<insert id="insertProjectUserRelation" parameterType="com.probada.project.vo.ProjectVO" >
+		INSERT INTO
+			USER_PROJECT
+			(USER_ID, PROJ_NO, ROLE)
+		VALUES
+			(#{userId},#{projNo},#{role})
+	</insert>
+
+	<update id="updateProjectUserRelationToRejoin" parameterType="com.probada.project.vo.ProjectVO">
+		UPDATE
+			USER_PROJECT
+		SET
+			IS_DELETED = '0'
+		WHERE
+			USER_ID = #{userId}
+		AND
+			PROJ_NO = #{projNo}
+	</update>
+
+	<delete id="deleteProjectUserRelation" parameterType="com.probada.project.vo.ProjectVO">
+		UPDATE
+			USER_PROJECT
+		SET
+			IS_DELETED = '1'
+		WHERE
+			USER_ID = #{userId}
+		AND
+			PROJ_NO = #{projNo}
+	</delete>
+
+	<update id="updateProjectDetail" parameterType="com.probada.project.vo.ProjectVO">
+		UPDATE
+			PROJECT
+		SET
+			TITLE = #{title},
+			PRIVACY = #{privacy},
+			STARTDATE = #{startdate},
+			ENDDATE = #{enddate},
+			INTRO = #{intro}
+		WHERE
+			PROJ_NO = #{projNo}
+	</update>
+
+	<update id="updateUserRole" parameterType="com.probada.project.vo.ProjectVO">
+		UPDATE
+			USER_PROJECT
+		SET
+			ROLE = #{role}
+		WHERE
+			PROJ_NO = #{projNo}
+		AND
+			USER_ID = #{userId}
+	</update>
+
+	<sql id="statusForProject">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = PROJECT.STATUS) AS STATUS
+	</sql>
+
+	<sql id="statusForProjectAsA">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.STATUS) AS STATUS
+	</sql>
+
+	<sql id="privacyForProject">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = PROJECT.PRIVACY) AS PRIVACY
+	</sql>
+
+	<sql id="privacyForProjectAsA">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.PRIVACY) AS PRIVACY
+	</sql>
+
+	<select id="selectProjectSeqNext" resultType="int">
+		SELECT
+			PROJ_SEQ.NEXTVAL AS PROJ_NO FROM DUAL
+	</select>
+
+</mapper>

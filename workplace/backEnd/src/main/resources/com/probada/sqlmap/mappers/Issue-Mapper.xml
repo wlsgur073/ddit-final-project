@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Issue-Mapper">
+	<select id="selectIssueSortByUserId" resultType="issue" parameterType="String">
+		SELECT DISTINCT B.TITLE AS PROJ_TITLE
+			 , A.PROJ_NO
+		  FROM ISSUE A, PROJECT B
+		 WHERE A.PROJ_NO = B.PROJ_NO
+		   AND A.USER_ID = #{userId}
+	</select>
+
+	<select id="selectIssueListByUserId" resultType="issue" parameterType="String">
+		SELECT A.ISSUE_NO
+			 , A.PROJ_NO
+			 , A.STATUS
+			 , B.NICKNAME AS USER_ID
+			 , A.TITLE
+			 , A.CONTENT
+			 , <include refid="importantForIssue"/>
+			 , A.REGDATE
+			 , A.STARTDATE
+			 , A.ENDDATE
+			 , A.UPDATEDATE
+			 , <include refid="statusForIssue"/>
+			 , A.DOC_CONT_NO
+			 , C.TITLE AS PROJ_TITLE
+		  FROM ISSUE A, "USER" B, PROJECT C
+		 WHERE A.USER_ID = B.USER_ID
+		   AND A.PROJ_NO = C.PROJ_NO
+		   AND A.USER_ID = #{userId}
+		 ORDER BY A.ISSUE_NO DESC
+	</select>
+
+	<select id="selectIssueListByProjNoAndUserId" resultType="issue" parameterType="issue">
+		SELECT A.ISSUE_NO
+			 , A.PROJ_NO
+			 , B.NICKNAME AS USER_ID
+			 , A.TITLE
+			 , A.CONTENT
+			 , <include refid="importantForIssue"/>
+			 , A.REGDATE
+			 , A.STARTDATE
+			 , A.ENDDATE
+			 , A.UPDATEDATE
+			 , <include refid="statusForIssue"/>
+			 , A.DOC_CONT_NO
+			 , C.TITLE AS PROJ_TITLE
+		  FROM ISSUE A, "USER" B, PROJECT C
+		 WHERE A.USER_ID = B.USER_ID
+		   AND A.PROJ_NO = C.PROJ_NO
+		   AND A.USER_ID = #{userId}
+		   AND A.PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectIssueListByProjNo" resultType="issue" parameterType="String">
+		SELECT
+			A.ISSUE_NO,
+			A.PROJ_NO,
+			B.NICKNAME AS USER_ID,
+			A.TITLE,
+			A.CONTENT,
+			<include refid="importantForIssue"/>,
+			A.REGDATE,
+			A.STARTDATE,
+			A.ENDDATE,
+			A.UPDATEDATE,
+			<include refid="statusForIssue"/> ,
+			A.DOC_CONT_NO
+		FROM
+			ISSUE A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.PROJ_NO = #{projNo}
+		ORDER BY
+			A.ISSUE_NO DESC
+	</select>
+
+	<select id="selectIssueByIssueNo" resultType="issue" parameterType="issue">
+		SELECT
+    		A.ISSUE_NO, A.STATUS, A.PROJ_NO ,B.NICKNAME ,B.USER_ID, A.TITLE ,A.CONTENT ,<include refid="importantForIssue"/>
+   			,A.REGDATE ,A.STARTDATE ,A.ENDDATE ,A.UPDATEDATE ,<include refid="statusForIssue"/> ,A.DOC_CONT_NO
+		FROM
+    		ISSUE A
+    	JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+    	WHERE
+    		A.ISSUE_NO = #{issueNo}
+    	AND
+    		A.PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectMileIssueListByIssueNo" resultType="mileIssue" parameterType="String">
+		SELECT
+			MILE_NO,
+			ISSUE_NO,
+			JOINDATE
+		FROM
+			MILE_ISSUE
+		WHERE
+			ISSUE_NO = #{issueNo}
+	</select>
+
+	<update id="updateIssueByIssueNo" parameterType="issue">
+		UPDATE ISSUE
+		SET PROJ_NO    = #{projNo},
+    		USER_ID    = #{userId},
+       		TITLE      = #{title},
+       		CONTENT    = #{content},
+       		IMPORTANT  = #{important},
+       		STARTDATE  = #{startdate},
+       		ENDDATE    = #{enddate},
+       		UPDATEDATE = sysdate,
+       		STATUS     = #{status}
+       	WHERE
+       		ISSUE_NO   = #{issueNo}
+	</update>
+
+	<delete id="deleteIssueByIssueNo" parameterType="issue">
+		DELETE FROM
+			ISSUE
+		WHERE
+			ISSUE_NO = #{issueNo}
+	</delete>
+
+	<insert id="insertIssue" parameterType="issue">
+		INSERT INTO
+			ISSUE (
+  		  	ISSUE_NO, PROJ_NO, USER_ID, TITLE, CONTENT,
+    		IMPORTANT, REGDATE, STARTDATE, ENDDATE, UPDATEDATE,
+    		STATUS, DOC_CONT_NO
+    	  ) VALUES (
+    		#{issueNo}, #{projNo}, #{userId}, #{title}, #{content},
+    		#{important}, sysdate, #{startdate}, #{enddate}, sysdate,
+    		#{status}, 1
+		)
+
+	</insert>
+	<sql id="statusForIssue">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.STATUS) AS STATUS
+	</sql>
+
+	<sql id="importantForIssue">
+			(SELECT
+				CODE_NAME
+			FROM
+				COMMON_CODE
+            WHERE
+            	COMMON_CODE.CODE_NO = A.IMPORTANT) AS IMPORTANT
+	</sql>
+
+	<select id="selectIssueSeqNext" resultType="int">
+		SELECT
+			ISSUE_SEQ.NEXTVAL AS ISSUE_NO FROM DUAL
+	</select>
+</mapper>

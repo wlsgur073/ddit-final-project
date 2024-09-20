@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Request-Mapper">
+	<sql id="statusForRequest">
+		(SELECT CODE_NAME
+		   FROM COMMON_CODE
+		  WHERE COMMON_CODE.CODE_NO = REQUEST.STATUS) AS STATUS
+	</sql>
+	
+	<select id="selectYourRequestSort" resultType="requestVO">
+		SELECT DISTINCT <include refid="statusForRequest"/>
+		  FROM REQUEST
+		 WHERE USER_TO = #{userTo}
+	</select>
+	
+	<select id="selectMyRequestSort" resultType="requestVO">
+		SELECT DISTINCT <include refid="statusForRequest"/>
+		  FROM REQUEST
+		 WHERE USER_From = #{userFrom}
+	</select>
+	
+	<select id="selectYourRequestList" resultType="requestVO">
+		SELECT REQUEST.REQ_NO
+			 , REQUEST.USER_FROM
+			 , REQUEST.USER_TO
+			 , PROJECT.TITLE AS PROJ_NO
+			 , REQUEST.TITLE
+			 , REQUEST.CONTENT
+			 , REQUEST.URL
+			 , <include refid="statusForRequest"/>
+			 , REQUEST.REGDATE
+			 , REQUEST.REQ_RES
+		  FROM REQUEST, PROJECT
+		 WHERE REQUEST.PROJ_NO = PROJECT.PROJ_NO
+		   AND REQUEST.USER_TO = #{userTo}
+		 ORDER BY REQUEST.REGDATE DESC
+	</select>
+	
+	<select id="selectMyRequestList" resultType="requestVO">
+		SELECT REQUEST.REQ_NO
+			 , REQUEST.USER_FROM
+			 , REQUEST.USER_TO
+			 , PROJECT.TITLE AS PROJ_NO
+			 , REQUEST.TITLE
+			 , REQUEST.CONTENT
+			 , REQUEST.URL
+			 , <include refid="statusForRequest"/>
+			 , REQUEST.REGDATE
+			 , REQUEST.REQ_RES
+		  FROM REQUEST, PROJECT
+		 WHERE REQUEST.PROJ_NO = PROJECT.PROJ_NO
+		   AND REQUEST.USER_FROM = #{userFrom}
+		 ORDER BY REQUEST.REGDATE DESC
+	</select>
+	
+	<update id="changeRequestStatus" parameterType="hashMap">
+		UPDATE REQUEST
+		   SET STATUS = #{status}
+			 , REQ_RES = #{reqRes}
+		 WHERE REQ_NO = #{reqNo}
+	</update>
+</mapper>
+
+
+

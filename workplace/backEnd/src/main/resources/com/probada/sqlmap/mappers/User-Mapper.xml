@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mybatis는 namespace가 필수다. -->
+<!-- select문 안에는 주석도 text로 인식하기 때문에 주석쓰면 안된다 -->
+	<mapper namespace="User-Mapper">
+
+
+	<select id="selectUserById" resultType="User" parameterType="str">
+		SELECT *
+		FROM "USER"
+		WHERE USER_ID=#{userId}
+
+	</select>
+	
+	<select id="getUserByNickname" resultType="User" parameterType="str">
+		SELECT *
+		FROM "USER"
+		WHERE NICKNAME=#{nickname}
+
+	</select>
+
+
+	<select id="selectTotalUserByPrivacy" resultType="User" parameterType="str">
+		SELECT *
+		FROM "USER"
+		WHERE  PRIVACY='A201'
+		ORDER BY LIKE_COUNT DESC
+	</select>
+
+
+
+	<!-- 로그인 -->
+	<select id="login" parameterType="User" resultType="User">
+		SELECT *
+		FROM "USER"
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<!-- 계정 유무 체크 -->
+	<select id="isAccount" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		FROM "USER"
+		WHERE USER_ID = #{userId}
+	</select>
+
+
+	<!-- 회원가입 -->
+	 <update id="insertUser" parameterType="User" >
+		INSERT INTO "USER" (
+		USER_ID
+		, PWD
+		, NICKNAME
+		, PICTURE
+		, INTRO
+		, REGDATE
+		, AUTHKEY
+		, PRIVACY
+		, LIKE_COUNT
+		, AUTHSTATUS
+		,USER_UPLOAD_USAGE)
+		VALUES(
+		#{userId}
+		, #{pwd}
+		, #{nickname}
+		, 'default.image.jpg'
+		, 'intro'
+		, SYSDATE
+		, '0'
+		, 'A201'
+		, 0
+		, 0
+		, 0)
+	</update>
+
+
+	<update id="updateUser" parameterType="User">
+		update "USER"
+		set  user_id=#{userId}
+
+			<if test="pwd != null">
+				,pwd=#{pwd}
+			</if>
+
+			<if test="nickname != null and nickname != '' ">
+				,nickname=#{nickname}
+			</if>
+
+			<if test="picture != null and picture != ''">
+				,picture=#{picture}
+			</if>
+
+			<if test="intro != null and intro != '' ">
+				,intro=#{intro}
+			</if>
+
+			<if test="authkey != null">
+				,authkey=#{authkey}
+			</if>
+
+			<if test="privacy != null">
+				,privacy=#{privacy}
+			</if>
+
+			<if test="authStatus != null">
+				,AUTHSTATUS=#{authStatus}
+			</if>
+
+
+
+		where user_id=#{userId}
+
+	</update>
+
+	<!-- 생성된 메일 인증키 업데이트 -->
+	<update id="createAuthkey" parameterType="Map">
+		UPDATE "USER"
+		SET
+		AUTHKEY = #{authkey}
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<!-- authstatus 컬럼을 0 에서 1로 업데이트  구현되어있지 않은 상태-->
+	<update id="updateAuthstatus" parameterType="String">
+		UPDATE "USER"
+		SET
+		AUTHSTATUS = 1
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<select id="idCheck" parameterType="string" resultType="string">
+		SELECT USER_ID
+		FROM "USER"
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="nicknameCheck" parameterType="string" resultType="string">
+		SELECT NICKNAME
+		FROM "USER"
+		WHERE NICKNAME = #{nickname}
+	</select>
+
+	<update id="setUserUploadUsage" parameterType="User">
+		UPDATE "USER"
+		SET USER_UPLOAD_USAGE = #{userUploadUsage}
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<select id="selectUserByProjNo" resultType="User" parameterType="str">
+		SELECT
+    		 *
+		FROM
+    		"USER" A
+		JOIN
+			USER_PROJECT B ON (A.USER_ID = B.USER_ID)
+		WHERE
+			PROJ_NO = #{projNo}
+		AND
+			IS_DELETED = 0
+		ORDER BY
+			B.JOINDATE ASC
+	</select>
+
+	<select id="selectUserByCprojNo" resultType="User" parameterType="str">
+		SELECT
+    		 *
+		FROM
+    		"USER" A
+		JOIN
+			C_PROJECT_R B ON (A.USER_ID = B.USER_ID)
+		WHERE
+			CPROJ_NO = #{cprojNo}
+		AND
+			IS_DELETED = 0
+		ORDER BY
+			B.JOINDATE ASC
+	</select>
+	
+	
+
+	<!-- seok -->
+	<select id="pwdCheck" parameterType="User" resultType="int">
+		select count(*) from "USER"
+		where pwd = #{pwd}
+         and USER_ID = #{userId}
+	</select>
+
+
+	<select id="getUserProjNoList" parameterType="String" resultType="String">
+		SELECT PROJ_NO
+		FROM USER_PROJECT
+		WHERE USER_ID = #{userId}
+		AND
+			IS_DELETED = 0
+	</select>
+
+	<select id="pwdPicker" parameterType="String" resultType="String">
+		SELECT PWD
+		FROM "USER"
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="pwdPiker" parameterType="str" resultType="str">
+		select pwd from "USER"
+		where
+         USER_ID = #{userId}
+	</select>
+
+	<update id="deleteUser" parameterType="str">
+		delete
+		from "USER"
+		where USER_ID = #{userId}
+	</update>
+
+	<select id="selectAuthkey" parameterType="String" resultType="String">
+		SELECT AUTHKEY
+		FROM "USER"
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<update id="setUserPwd" parameterType="User">
+		UPDATE "USER"
+		SET PWD = #{pwd}
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<select id="taskTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM TASK
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="issueTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM ISSUE
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="mailTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM MAIL
+		WHERE USER_TO = #{userId}
+	</select>
+
+	<select id="requestTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM REQUEST
+		WHERE USER_TO = #{userId}
+	</select>
+
+	<select id="projectTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM USER_PROJECT
+		WHERE USER_ID = #{userId}
+		AND
+			IS_DELETED = 0
+	</select>
+
+	<select id="collaboTotalCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM C_PROJECT_R
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="getMemberAchievementList" parameterType="String" resultType="User">
+		SELECT
+    		 A.USER_ID
+    		 ,A.NICKNAME
+    		 ,<include refid="getUserTaskCount"/>
+    		 ,<include refid="getUserCompleteTaskCount"/>
+    		 ,<include refid="getUserDelayTaskCount"/>
+    		 ,<include refid="getUserOngoingTaskCount"/>
+    		 ,<include refid="getUserBeforeTaskCount"/>
+		FROM
+    		"USER" A
+		JOIN
+			USER_PROJECT B ON (A.USER_ID = B.USER_ID)
+		WHERE
+			PROJ_NO = #{projNo}
+		AND
+			IS_DELETED = 0
+	</select>
+
+<select id="getCporjMemberAchievementList" parameterType="String" resultType="User">
+		SELECT
+    		 A.USER_ID
+    		 ,A.NICKNAME
+    		 ,<include refid="getCUserTaskCount"/>
+    		 ,<include refid="getCUserCompleteTaskCount"/>
+    		 ,<include refid="getCUserDelayTaskCount"/>
+    		 ,<include refid="getCUserOngoingTaskCount"/>
+    		 ,<include refid="getCUserBeforeTaskCount"/>
+		FROM
+    		"USER" A
+		JOIN
+			C_PROJECT_R B ON (A.USER_ID = B.USER_ID)
+		WHERE
+			CPROJ_NO = #{cprojNo}
+		AND
+			IS_DELETED = 0
+	</select>
+	
+	<sql id="getUserTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE USER_ID = A.USER_ID
+         AND PROJ_NO = #{projNo}) AS TASK_COUNT
+	</sql>
+
+	<sql id="getUserCompleteTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B204'
+         AND USER_ID = A.USER_ID
+         AND PROJ_NO = #{projNo}) AS COMPLETE_TASK_COUNT
+	</sql>
+
+	<sql id="getUserDelayTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B203'
+         AND USER_ID = A.USER_ID
+         AND PROJ_NO = #{projNo}) AS DELAY_TASK_COUNT
+	</sql>
+	<sql id="getUserOngoingTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B202'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS ONGOING_TASK_COUNT
+	</sql>
+	<sql id="getUserBeforeTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B201'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS BEFORE_TASK_COUNT
+	</sql>
+	
+	<sql id="getCUserTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS TASK_COUNT
+	</sql>
+
+	<sql id="getCUserCompleteTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B204'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS COMPLETE_TASK_COUNT
+	</sql>
+
+	<sql id="getCUserDelayTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B203'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS DELAY_TASK_COUNT
+	</sql>
+	<sql id="getCUserOngoingTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B202'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS ONGOING_TASK_COUNT
+	</sql>
+	<sql id="getCUserBeforeTaskCount">
+		(SELECT COUNT(*)
+         FROM TASK
+         WHERE STATUS = 'B201'
+         AND USER_ID = A.USER_ID
+         AND CPROJ_NO = #{cprojNo}) AS BEFORE_TASK_COUNT
+	</sql>
+
+</mapper>
+
+
+

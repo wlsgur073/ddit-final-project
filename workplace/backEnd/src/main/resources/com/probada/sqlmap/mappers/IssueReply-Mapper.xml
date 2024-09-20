@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="IssueReply-Mapper">
+
+	<select id="selectIssueReplyListByIssueNo" parameterType="String" resultType="issueReply">
+		SELECT ISSUE_RES_NO
+			 , ISSUE_NO
+			 , USER_ID
+			 , PROJ_NO
+			 , CONTENT
+			 , REGDATE
+			 , UPDATEDATE
+		  FROM ISSUE_RES
+		 WHERE ISSUE_NO = #{issueNo}
+		 ORDER BY ISSUE_RES_NO ASC
+	</select>
+
+	<update id="insertIssueReply" parameterType="issueReply">
+		INSERT INTO ISSUE_RES (
+			ISSUE_RES_NO
+		  , ISSUE_NO
+		  , USER_ID
+		  , PROJ_NO
+		  , CONTENT
+		  , REGDATE
+		  , UPDATEDATE
+		  ) VALUES (
+			ISSUE_RES_SEQ.NEXTVAL
+		  , #{issueNo}
+		  , #{userId}
+		  , #{projNo}
+		  , #{content}
+		  , SYSDATE
+		  , SYSDATE
+		  )
+	</update>
+
+	<update id="updateIssueReply" parameterType="issueReply">
+		UPDATE ISSUE_RES
+		   SET CONTENT = #{content}
+			 , UPDATEDATE = SYSDATE
+		 WHERE ISSUE_RES_NO = #{issueResNo}
+	</update>
+
+	<update id="deleteIssueReply" parameterType="String">
+		DELETE FROM ISSUE_RES
+		 WHERE ISSUE_RES_NO = #{issueResNo}
+	</update>
+</mapper>

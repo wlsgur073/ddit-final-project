@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PaymentsBill-Mapper">
+
+	<insert id="init_free" parameterType="com.probada.payment.vo.PaymentsBillVO">
+		INSERT INTO PAYMENTS_BILL(
+			BILL_NO
+			,PLAN_NO
+			,USER_ID
+			,PAIDDATE
+			,ENDDATE
+		)
+		VALUES(
+			PAYMENTS_BILL_SEQ.NEXTVAL
+			, 1
+			, #{userId}
+			, SYSDATE
+			, ADD_MONTHS(SYSDATE, +1)
+		)
+		<selectKey keyProperty="billNo" resultType="int" order="BEFORE">
+			SELECT LAST_NUMBER
+			FROM USER_SEQUENCES
+			WHERE SEQUENCE_NAME = 'PAYMENTS_BILL_SEQ'
+		</selectKey>
+	</insert>
+	
+	<select id="getEndDate" resultType="date" parameterType="string">
+		SELECT ENDDATE
+		FROM PAYMENTS_BILL
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="getPlanNo" parameterType="string" resultType="string">
+		SELECT PLAN_NO
+		FROM PAYMENTS_BILL
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="getMaxUploadCapacity" parameterType="string" resultType="int">
+		SELECT MAX_UPLOAD_CAPACITY
+		FROM PAYMENTS_PLAN
+		WHERE PLAN_NO = #{planNo}
+	</select>
+	
+	<select id="countUserPaymentsBill" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM PAYMENTS_BILL
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="getMemoryCapacity" parameterType="string" resultType="int">
+		SELECT MEMORY_CAPACITY
+		  FROM PAYMENTS_PLAN
+		 WHERE PLAN_NO = #{planNo}
+	</select>
+	
+	<select id="getPaymentsPlanVO" parameterType="String" resultType="com.probada.payment.vo.PaymentsPlanVO">
+		SELECT *
+		FROM PAYMENTS_PLAN
+		WHERE PLAN_NO = #{planNo}
+	</select>
+	
+	<update id="updateUserPlan" parameterType="com.probada.payment.vo.PaymentsBillVO">
+		UPDATE PAYMENTS_BILL 
+		SET 
+			PLAN_NO = #{planNo}
+			, PAIDDATE = SYSDATE
+			, ENDDATE = ADD_MONTHS(SYSDATE, +1)
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<insert id="insertPaymentHistory" parameterType="com.probada.payment.vo.PaySuccessVO">
+		INSERT INTO PAYMENTS_HISTORY (
+		  USER_ID
+		 ,PAY_METHOD
+		 ,PRICE
+		 ,PAIDDATE
+		 ,STATUS
+		 ,PLAN_NAME
+		) VALUES (
+		  #{userId}
+		 ,#{payMethod}
+		 ,#{price}
+		 ,SYSDATE
+		 ,#{status}
+		 ,#{planName}
+		)
+	</insert>
+	
+	<select id="selectPaymentHistoryListByUserId" parameterType="String" resultType="com.probada.payment.vo.PaySuccessVO">
+		SELECT
+		  USER_ID
+		 ,PAY_METHOD
+		 ,PRICE
+		 ,PAIDDATE
+		 ,STATUS
+		 ,PLAN_NAME
+		FROM
+		  PAYMENTS_HISTORY
+		WHERE
+		  USER_ID = #{userId}
+	</select>
+</mapper>

@@ -1,0 +1,319 @@
+/*collabo css*/
+.form-control-collabo {
+  display: block;
+  width: 100%;
+  height: calc(2.25rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 0 0 transparent;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.custom-select.form-control-border,
+.form-control.form-control-border {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  box-shadow: inherit;
+}
+.form-group-collabo {
+  font-size: 20px;
+  color: black;
+}
+
+/* 콜라보 버튼 모음*/
+.collabo-submit-btn {
+  float: right;
+}
+.btn .create-btn .collabo-none-btn {
+  margin: 0px;
+}
+/* .mid_center{
+  display: flex;
+  justify-content: center;
+} */
+.btn.create-btn.registerForm {
+  width: 50px;
+  height: 50px;
+}
+.btn.btn-outline-dark.spoon {
+  margin-bottom: 15px;
+}
+.col-md-2.btnSpoon {
+  margin-top: 70px;
+}
+
+/*콜라보 모달*/
+.modal-content-collabo {
+  width: 650px;
+}
+
+/*collabo-none*/
+.control-label.collabo{
+	font-size : 15px;
+	color : black;
+}
+
+#tags_1_tag{
+      min-width: 300px;
+}
+
+/* 스푼 */
+#spoonMyUL {
+  list-style: none;
+}
+.spoonLi a {
+  color: black;
+  font-size: 1.5em;
+  padding-left: 0px;
+}
+.spoonCard {
+  color: black;
+}
+#example .demo-section {
+  max-width: none;
+  width: 1000px;
+}
+
+#example .k-listbox {
+  width: 400px;
+  height: 350px;
+}
+.collaboSpButton{
+      margin-top: 30px;
+    }
+
+.k-list-scroller.k-selectable {
+  width: 400px;
+}
+
+#example .k-listbox:first-child {
+  width: 500px;
+  margin-right: 1px;
+}
+
+.k-reset li .k-button {
+  width: 90px;
+}
+
+.k-ghost {
+  display: none !important;
+}
+
+.custom-placeholder {
+  opacity: 0.4;
+}
+
+#example .k-item {
+  line-height: 1em;
+}
+
+/* Material Theme padding adjustment*/
+
+.k-material #example .k-item,
+.k-material #example .k-item.k-state-hover,
+.k-materialblack #example .k-item,
+.k-materialblack #examplel .k-item.k-state-hover {
+  padding-left: 5px;
+  border-left: 0;
+}
+
+.k-item>span {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  margin: 20px 10px 10px 5px;
+}
+
+#example .k-item>span:first-child,
+.k-item.k-drag-clue>span:first-child {
+  -moz-box-shadow: inset 0 0 30px rgba(0, 0, 0, .3);
+  -webkit-box-shadow: inset 0 0 30px rgba(0, 0, 0, .3);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, .3);
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+
+#example h3,
+.k-item.k-drag-clue h3 {
+  font-size: 1.2em;
+  font-weight: normal;
+  margin: 0 0 1px 0;
+  padding: 0;
+}
+spoonLi
+#example p {
+  margin: 0;
+  padding: 0;
+  font-size: .8em;
+}
+#exmaple{
+  display: flex;
+  justify-content: center;
+}
+.form-group-collabo{
+  display: flex;
+  justify-content: center;
+}
+
+.spoon-select-bar{
+  display: flex;
+  justify-content: space-between;
+}
+
+/* collabo-none 캐러셀 내부 card*/
+.carousel-control-prev.coll-none {
+  width: 5%;
+}
+.carousel-control-next.coll-none {
+  width: 5%;
+}
+.card-body.coll-none {
+  height: 200px;
+}
+.well.profile_view.collabo-none {
+  margin: 0px;
+  height: 200px;
+}
+
+/*collabo-list*/
+.collabo-list-sort {
+  margin-bottom: 5px;
+}
+.collabo-list-btn {
+  width: 50px;
+  height: 50px;
+  float: right;
+  padding: 0px;
+}
+.collabo-list.card {
+  margin-bottom: 10px;
+}
+.collabo-list-a {
+  color: black;
+}
+.card-body.collabo-list {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.projRegistPicture{
+	border: 1px solid black;
+	/*백그라운드 위치 옵션을 center 정중앙에 위치 */
+	background-position: center;
+	/*기본적으로 백그라운드의 옵션은 repeat이다. */
+	background-repeat: no-repeat;
+	/* 백그라운드 이미지를 보여주기 위한 크기 옵션 */
+	background-size:cover;
+	weight: 400px; height : 200px;
+	margin:15px;
+}
+.x_panel {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 17px;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e6e9ed;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  column-break-inside: avoid;
+  opacity: 1;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  margin-top : 0px;
+}
+.form-group.custom-validate {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+}
+
+.form-group.custom-validate input:focus {
+    outline: 0;
+    border-color: #777;
+}
+
+.form-group.custom-validate.success input {
+    border-color: #2ecc71;
+}
+
+.custom-validate.error input {
+    border-color: #e74c3c;
+}
+i.fa-check-circle, i.fa-exclamation-circle {
+    visibility: hidden;
+    position: absolute;
+  float: right;
+    top: 20%;
+    right: 10px;
+}
+
+.form-group.custom-validate.success i.fa-check-circle {
+    color: #2ecc71;
+    visibility: visible;
+}
+
+.form-group.custom-validate.error i.fa-exclamation-circle {
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.form-group.custom-validate small {
+    color: #e74c3c;
+    position: absolute;
+    visibility: hidden;
+}
+
+.form-group.custom-validate.error small {
+    visibility: visible;
+}
+.form-group.custom-validate label{
+  left: 5px;
+  top: 30%;
+}
+
+/* collabo detail*/
+.collabo-detail-a{
+	color: black;
+}
+.collabo-member {
+  text-align: center;
+}
+.collabo-title {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+.collabo-member img {
+  width: 50px;
+  height: 50px;
+}
+.collabo-detail_body {
+  padding-bottom: 20px;
+}
+.collabo-bg-btn {
+  margin: 0 auto;
+}
+.header-title {
+  display: flex;
+  justify-content: space-between;
+}
+.collabo-a{
+	color : black;
+}
+
+
+
+

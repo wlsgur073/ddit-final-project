@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Milestone-Mapper">
+	<select id="selectMilestoneListByUserId" resultType="milestone" parameterType="String">
+		SELECT A.MILE_NO
+			 , A.TITLE
+			 , B.NICKNAME AS USER_ID
+			 , A.PROJ_NO
+			 , A.CONTENT
+			 , A.STATUS
+			 , A.REGDATE
+		  FROM MILE A, "USER" B
+		 WHERE A.USER_ID = B.USER_ID
+		   AND A.USER_ID = #{userId}
+	</select>
+
+	<select id="selectMilestoneListByProjNo" resultType="milestone" parameterType="String">
+		SELECT
+			A.MILE_NO,
+			A.TITLE,
+			B.NICKNAME AS USER_ID,
+			A.PROJ_NO,
+			A.CONTENT,
+			A.STATUS,
+			A.REGDATE
+		FROM
+			MILE A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectMilestoneByMileNo" resultType="milestone" parameterType="String">
+		SELECT
+			A.MILE_NO,
+			A.TITLE,
+			B.NICKNAME,
+			B.USER_ID,
+			A.PROJ_NO,
+			A.CONTENT,
+			A.STATUS,
+			A.REGDATE
+		FROM
+			MILE A
+		JOIN
+			"USER" B ON A.USER_ID = B.USER_ID
+		WHERE
+			A.MILE_NO = #{mileNo}
+	</select>
+
+	<select id="selectWholeIssueByProjNo" resultType="issue" parameterType="String">
+		SELECT DISTINCT
+    		ISSUE_NO,
+    		TITLE
+		FROM
+    		ISSUE
+    	WHERE
+    		PROJ_NO = #{projNo}
+	</select>
+
+	<select id="selectIssueListByMileNo" resultType="issue" parameterType="String">
+		SELECT
+    		A.ISSUE_NO,
+    		B.TITLE
+		FROM
+    		MILE_ISSUE A
+		JOIN
+    		ISSUE B ON(A.ISSUE_NO = B.ISSUE_NO)
+		WHERE
+    		MILE_NO = #{mileNo}
+	</select>
+
+	<update id="updateMilestoneDetail" parameterType="milestone">
+		UPDATE
+			MILE
+		SET
+			TITLE =#{title},
+			USER_ID = #{userId},
+			PROJ_NO = #{projNo},
+			CONTENT = #{content},
+			STATUS = #{status},
+			REGDATE = sysdate
+		WHERE
+			MILE_NO = #{mileNo}
+	</update>
+
+	<insert id="insertMilestoneDetail" parameterType="milestone">
+		INSERT INTO
+			MILE
+			(MILE_NO, TITLE, USER_ID ,PROJ_NO ,CONTENT ,STATUS ,REGDATE)
+   		VALUES
+   			(#{mileNo},#{title},#{userId},#{projNo},#{content},#{status}, sysdate)
+	</insert>
+
+	<insert id="insertMileIssueRelation" parameterType="issue">
+		INSERT INTO
+			MILE_ISSUE(MILE_NO,ISSUE_NO,JOINDATE)
+		VALUES
+			(#{mileNo},#{issueNo},sysdate)
+	</insert>
+
+	<delete id="deleteMileIssueRelation" parameterType="issue">
+		DELETE FROM
+			MILE_ISSUE
+		WHERE
+			MILE_NO = #{mileNo}
+		AND
+			ISSUE_NO = #{issueNo}
+	</delete>
+
+	<update id="deleteMilestone" parameterType="String">
+		DELETE
+		  FROM MILE
+		 WHERE MILE_NO = #{mileNo}
+	</update>
+
+	<update id="deleteMileIssue" parameterType="String">
+		DELETE
+		  FROM MILE_ISSUE
+		 WHERE MILE_NO = #{mileNo}
+	</update>
+
+	<select id="selectMileSeqNext" resultType="int">
+		SELECT
+			MILE_SEQ.NEXTVAL AS MILE_NO FROM DUAL
+	</select>
+</mapper>
